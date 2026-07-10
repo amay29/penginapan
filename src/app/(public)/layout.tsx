@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Trees, Compass, Tent, Mail, Phone, MapPin } from "lucide-react";
+import AiConcierge from "@/components/ui/AiConcierge";
 
 export default function PublicLayout({
   children,
@@ -171,6 +172,9 @@ export default function PublicLayout({
           </div>
         </div>
       </footer>
+
+      {/* ── AI CONCIERGE (Floating Chat) ──────────────────────── */}
+      <AiConcierge />
     </div>
   );
 }
