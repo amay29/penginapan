@@ -1,76 +1,173 @@
+"use client";
+
 import Link from "next/link";
-import { User, Menu } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 
 export default function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <div className="flex min-h-screen flex-col font-sans selection:bg-forest-900 selection:text-linen-50">
-      {/* Luxury Navbar */}
-      <header className="fixed top-0 z-50 w-full bg-linen-50/90 backdrop-blur-md transition-all duration-300">
-        <div className="container mx-auto flex h-24 items-center justify-between px-6 md:px-12">
-          {/* Left: Menu (Mobile) or Links (Desktop) */}
-          <div className="flex flex-1 items-center">
-            <button className="md:hidden text-forest-900">
-              <Menu className="h-6 w-6" strokeWidth={1.5} />
-            </button>
-            <nav className="hidden space-x-8 md:flex">
-              <Link href="/#accommodations" className="text-xs uppercase tracking-[0.2em] text-forest-700 luxury-link">
-                Accommodations
-              </Link>
-              <Link href="#experience" className="text-xs uppercase tracking-[0.2em] text-forest-700 luxury-link">
-                Experience
-              </Link>
-            </nav>
-          </div>
-
-          {/* Center: Logo */}
-          <Link href="/" className="flex flex-1 justify-center">
-            <span className="font-serif text-2xl tracking-widest text-forest-900 md:text-3xl">
-              DAMAR.
-            </span>
-          </Link>
-
-          {/* Right: Actions */}
-          <div className="flex flex-1 items-center justify-end space-x-6">
-            <Link href="/admin/login" className="hidden items-center space-x-2 text-xs uppercase tracking-[0.2em] text-forest-700 luxury-link md:flex">
-              <span>Admin</span>
-            </Link>
-            <Link 
-              href="/#accommodations" 
-              className="border border-forest-900 bg-forest-900 px-6 py-3 text-xs uppercase tracking-[0.2em] text-linen-50 transition-colors duration-500 hover:bg-transparent hover:text-forest-900"
+    <div className="flex min-h-screen flex-col">
+      {/* ── Navbar ─────────────────────────────────────────────── */}
+      <header
+        className={`fixed top-0 z-50 w-full transition-all duration-700 ease-luxury ${
+          scrolled
+            ? "bg-parchment-50/95 backdrop-blur-sm border-b border-parchment-300"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 md:px-12">
+          {/* Left nav */}
+          <nav className="hidden flex-1 items-center gap-10 md:flex">
+            <Link
+              href="/#accommodations"
+              className={`link-underline text-[10px] uppercase tracking-[0.25em] transition-colors duration-500 ${
+                scrolled ? "text-obsidian-700" : "text-parchment-100"
+              }`}
             >
-              Book
+              Retreats
+            </Link>
+            <Link
+              href="/"
+              className={`link-underline text-[10px] uppercase tracking-[0.25em] transition-colors duration-500 ${
+                scrolled ? "text-obsidian-700" : "text-parchment-100"
+              }`}
+            >
+              Journal
+            </Link>
+          </nav>
+
+          {/* Center logo */}
+          <div className="flex flex-1 justify-center">
+            <Link href="/" className="group">
+              <span
+                className={`font-serif text-[1.75rem] font-light tracking-[0.25em] transition-colors duration-500 md:text-[2rem] ${
+                  scrolled ? "text-obsidian-900" : "text-parchment-50"
+                }`}
+              >
+                DAMAR
+              </span>
             </Link>
           </div>
+
+          {/* Right actions */}
+          <div className="hidden flex-1 items-center justify-end gap-8 md:flex">
+            <Link
+              href="/admin/login"
+              className={`link-underline text-[10px] uppercase tracking-[0.25em] transition-colors duration-500 ${
+                scrolled ? "text-obsidian-700" : "text-parchment-100"
+              }`}
+            >
+              Admin
+            </Link>
+            <Link
+              href="/#accommodations"
+              className={`border px-7 py-3 text-[10px] uppercase tracking-[0.25em] transition-all duration-500 ${
+                scrolled
+                  ? "border-obsidian-900 text-obsidian-900 hover:bg-obsidian-900 hover:text-parchment-50"
+                  : "border-parchment-100 text-parchment-50 hover:bg-parchment-50 hover:text-obsidian-900"
+              }`}
+            >
+              Book Now
+            </Link>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="flex flex-1 justify-end md:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? (
+              <X className={`h-5 w-5 ${scrolled ? "text-obsidian-900" : "text-parchment-50"}`} strokeWidth={1} />
+            ) : (
+              <Menu className={`h-5 w-5 ${scrolled ? "text-obsidian-900" : "text-parchment-50"}`} strokeWidth={1} />
+            )}
+          </button>
+        </div>
+
+        {/* Mobile drawer */}
+        <div
+          className={`overflow-hidden transition-all duration-700 ease-luxury bg-parchment-50 md:hidden ${
+            menuOpen ? "max-h-64 border-t border-parchment-200" : "max-h-0"
+          }`}
+        >
+          <nav className="flex flex-col gap-6 px-6 py-8">
+            <Link href="/#accommodations" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Retreats</Link>
+            <Link href="/" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Journal</Link>
+            <Link href="/admin/login" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Admin</Link>
+            <Link href="/#accommodations" onClick={() => setMenuOpen(false)} className="mt-2 border border-obsidian-900 px-7 py-3 text-center text-[10px] uppercase tracking-[0.25em] text-obsidian-900 w-full">Book Now</Link>
+          </nav>
         </div>
       </header>
 
       <main className="flex-1">{children}</main>
 
-      {/* Luxury Footer */}
-      <footer className="bg-forest-900 py-20 text-linen-50">
-        <div className="container mx-auto px-6 md:px-12">
-          <div className="grid gap-12 md:grid-cols-3">
-            <div className="col-span-1 md:col-span-2">
-              <h3 className="font-serif text-3xl md:text-5xl tracking-wide mb-6">DAMAR.</h3>
-              <p className="max-w-md text-forest-500 text-sm leading-relaxed">
-                An exclusive sanctuary where modern luxury meets the untamed beauty of nature. 
-                Experience tranquility in our meticulously curated retreats.
+      {/* ── Marquee banner ─────────────────────────────────────── */}
+      <div className="overflow-hidden border-y border-obsidian-900 bg-obsidian-900 py-4">
+        <div className="flex w-max animate-marquee gap-0">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <span key={i} className="flex items-center gap-8 px-8 text-[10px] uppercase tracking-[0.3em] text-obsidian-400">
+              <span>Luxury Glamping</span>
+              <span className="text-gold-400">✦</span>
+              <span>A-Frame Retreats</span>
+              <span className="text-gold-400">✦</span>
+              <span>Nature Escapes</span>
+              <span className="text-gold-400">✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Footer ─────────────────────────────────────────────── */}
+      <footer className="bg-obsidian-900 text-parchment-100">
+        <div className="mx-auto max-w-[1400px] px-6 py-24 md:px-12">
+          <div className="grid gap-16 md:grid-cols-12">
+            <div className="md:col-span-6">
+              <p className="mb-6 font-serif text-5xl font-light tracking-[0.15em] md:text-7xl">
+                DAMAR
+              </p>
+              <p className="max-w-sm text-sm leading-relaxed text-obsidian-400">
+                An exclusive sanctuary where modern luxury meets the untamed beauty of nature.
+                Each space is a love letter to the wilderness.
               </p>
             </div>
-            <div className="flex flex-col space-y-4 text-sm tracking-[0.1em] uppercase text-forest-500">
-              <Link href="#" className="hover:text-linen-50 transition-colors">Instagram</Link>
-              <Link href="#" className="hover:text-linen-50 transition-colors">Journal</Link>
-              <Link href="#" className="hover:text-linen-50 transition-colors">Contact</Link>
-              <Link href="/admin/login" className="hover:text-linen-50 transition-colors">Admin Portal</Link>
+            <div className="md:col-span-3">
+              <p className="mb-6 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">Explore</p>
+              <ul className="space-y-4 text-sm text-obsidian-400">
+                <li><Link href="/#accommodations" className="link-underline hover:text-parchment-100 transition-colors duration-300">Retreats</Link></li>
+                <li><Link href="/" className="link-underline hover:text-parchment-100 transition-colors duration-300">Journal</Link></li>
+                <li><Link href="/" className="link-underline hover:text-parchment-100 transition-colors duration-300">Contact</Link></li>
+              </ul>
+            </div>
+            <div className="md:col-span-3">
+              <p className="mb-6 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">Follow</p>
+              <ul className="space-y-4 text-sm text-obsidian-400">
+                <li><Link href="#" className="link-underline hover:text-parchment-100 transition-colors duration-300">Instagram</Link></li>
+                <li><Link href="#" className="link-underline hover:text-parchment-100 transition-colors duration-300">Pinterest</Link></li>
+                <li><Link href="/admin/login" className="link-underline hover:text-parchment-100 transition-colors duration-300">Admin Portal</Link></li>
+              </ul>
             </div>
           </div>
-          <div className="mt-20 border-t border-forest-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs tracking-wider text-forest-600">
-            <p>&copy; {new Date().getFullYear()} Damar Retreats. All rights reserved.</p>
-            <p className="mt-4 md:mt-0">Design by Antigravity</p>
+
+          <div className="mt-20 flex flex-col items-center justify-between border-t border-obsidian-800 pt-8 md:flex-row">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-obsidian-600">
+              © {new Date().getFullYear()} Damar Retreats
+            </p>
+            <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-obsidian-600 md:mt-0">
+              Crafted with intention
+            </p>
           </div>
         </div>
       </footer>

@@ -4,7 +4,7 @@ import { useState, useMemo, useTransition } from "react";
 import { Unit } from "@prisma/client";
 import { Calendar } from "@/components/ui/calendar";
 import { DateRange, Matcher } from "react-day-picker";
-import { addDays, differenceInDays, isWithinInterval, startOfDay, isBefore } from "date-fns";
+import { differenceInDays, isWithinInterval, startOfDay, isBefore, format } from "date-fns";
 import { submitBooking } from "@/actions/booking";
 import { useRouter } from "next/navigation";
 
@@ -19,45 +19,32 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Calculate disabled dates (past dates and existing booked dates)
   const disabledDates = useMemo(() => {
-    const disabled: Matcher[] = [
-      { before: startOfDay(new Date()) } // Disable past dates
-    ];
-
-    existingBookings.forEach(booking => {
+    const disabled: Matcher[] = [{ before: startOfDay(new Date()) }];
+    existingBookings.forEach(b => {
       disabled.push({
-        from: startOfDay(new Date(booking.checkIn)),
-        to: startOfDay(new Date(booking.checkOut))
+        from: startOfDay(new Date(b.checkIn)),
+        to: startOfDay(new Date(b.checkOut))
       });
     });
-
     return disabled;
   }, [existingBookings]);
 
-  // Handle date selection to prevent selecting across disabled dates
   const handleDateSelect = (newDate: DateRange | undefined) => {
     if (newDate?.from && newDate?.to) {
-      // Check if any disabled date falls within the selected range
-      const overlap = existingBookings.some(booking => {
-        const bIn = startOfDay(new Date(booking.checkIn));
-        const bOut = startOfDay(new Date(booking.checkOut));
+      const overlap = existingBookings.some(b => {
+        const bIn = startOfDay(new Date(b.checkIn));
+        const bOut = startOfDay(new Date(b.checkOut));
         return (
           isWithinInterval(bIn, { start: newDate.from!, end: newDate.to! }) ||
           isWithinInterval(bOut, { start: newDate.from!, end: newDate.to! }) ||
           (isBefore(bIn, newDate.from!) && isBefore(newDate.to!, bOut))
         );
       });
-
-      if (overlap) {
-        // Reset selection if invalid
-        setDate(undefined);
-        return;
-      }
+      if (overlap) { setDate(undefined); return; }
     }
     setDate(newDate);
   };
@@ -67,15 +54,10 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date?.from || !date?.to) {
-      setError("Please select check-in and check-out dates.");
+    if (!date?.from || !date?.to || nights < 1) {
+      setError("Please select valid check-in and check-out dates.");
       return;
     }
-    if (nights < 1) {
-      setError("Check-out date must be after check-in date.");
-      return;
-    }
-
     setError(null);
     startTransition(async () => {
       const result = await submitBooking({
@@ -87,116 +69,123 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
         guestPhone: phone,
         totalPrice
       });
-
-      if (result.error) {
-        setError(result.error);
-      } else if (result.success) {
+      if (result.error) setError(result.error);
+      else if (result.success)
         router.push(`/unit/${unit.id}/book/success?bookingId=${result.bookingId}`);
-      }
     });
   };
 
+  const inputClass =
+    "w-full border-0 border-b border-parchment-300 bg-transparent px-0 py-3 text-sm text-obsidian-900 placeholder-obsidian-300 focus:border-obsidian-900 focus:outline-none transition-colors duration-300";
+  const labelClass = "block text-[9px] uppercase tracking-[0.25em] text-obsidian-400 mb-1";
+
   return (
-    <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2">
-      {/* Calendar Section */}
-      <div className="flex flex-col items-center">
-        <h2 className="mb-6 w-full text-xl font-bold text-earth-900">1. Select Dates</h2>
+    <div className="mx-auto max-w-[1400px] grid gap-16 px-6 py-16 md:px-16 lg:grid-cols-2 lg:gap-24">
+
+      {/* ── Left: Calendar ───────────────────────────────────── */}
+      <div>
+        <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Step 01</p>
+        <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Select Dates</h2>
+
         <Calendar
           mode="range"
           selected={date}
           onSelect={handleDateSelect}
           numberOfMonths={2}
           disabled={disabledDates}
-          className="w-full max-w-fit"
+          className="w-full"
         />
-        <div className="mt-6 flex w-full max-w-fit items-center justify-between text-sm text-earth-600">
-          <div className="flex items-center">
-            <span className="mr-2 h-3 w-3 rounded-full bg-sand-200"></span> Available
+
+        {/* Live price preview */}
+        {nights > 0 && (
+          <div className="mt-8 border-t border-parchment-300 pt-8">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-obsidian-500">
+                {format(date!.from!, "d MMM")} → {format(date!.to!, "d MMM yyyy")}
+              </span>
+              <span className="text-obsidian-700">{nights} nights</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Estimated Total</span>
+              <span className="font-serif text-2xl text-obsidian-900">
+                Rp {totalPrice.toLocaleString("id-ID")}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <span className="mr-2 h-3 w-3 rounded-full bg-sand-300 opacity-50"></span> Booked
-          </div>
-          <div className="flex items-center">
-            <span className="mr-2 h-3 w-3 rounded-full bg-earth-800"></span> Selected
-          </div>
-        </div>
+        )}
+
+        {!date?.from && (
+          <p className="mt-6 text-xs text-obsidian-400 italic">
+            Click a start date, then an end date on the calendar above.
+          </p>
+        )}
       </div>
 
-      {/* Form Section */}
+      {/* ── Right: Form ──────────────────────────────────────── */}
       <div>
-        <h2 className="mb-6 text-xl font-bold text-earth-900">2. Guest Details</h2>
-        <form onSubmit={handleSubmit} className="rounded-2xl border border-sand-200 bg-white p-8 shadow-xl">
-          
+        <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Step 02</p>
+        <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Your Details</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-10">
           {error && (
-            <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-700 border border-red-200">
+            <div className="border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
               {error}
             </div>
           )}
 
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="mb-2 block text-sm font-medium text-earth-800">Full Name</label>
-              <input
-                id="name"
-                required
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full rounded-lg border border-sand-300 px-4 py-3 text-earth-900 focus:border-earth-600 focus:outline-none focus:ring-1 focus:ring-earth-600"
-                placeholder="John Doe"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium text-earth-800">Email Address</label>
-              <input
-                id="email"
-                required
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-sand-300 px-4 py-3 text-earth-900 focus:border-earth-600 focus:outline-none focus:ring-1 focus:ring-earth-600"
-                placeholder="john@example.com"
-              />
-            </div>
-            <div>
-              <label htmlFor="phone" className="mb-2 block text-sm font-medium text-earth-800">Phone Number</label>
-              <input
-                id="phone"
-                required
-                type="tel"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                className="w-full rounded-lg border border-sand-300 px-4 py-3 text-earth-900 focus:border-earth-600 focus:outline-none focus:ring-1 focus:ring-earth-600"
-                placeholder="+62 812 3456 7890"
-              />
-            </div>
+          <div>
+            <label htmlFor="name" className={labelClass}>Full Name</label>
+            <input id="name" required type="text" value={name}
+              onChange={e => setName(e.target.value)}
+              className={inputClass} placeholder="Your full name" />
+          </div>
+          <div>
+            <label htmlFor="email" className={labelClass}>Email Address</label>
+            <input id="email" required type="email" value={email}
+              onChange={e => setEmail(e.target.value)}
+              className={inputClass} placeholder="your@email.com" />
+          </div>
+          <div>
+            <label htmlFor="phone" className={labelClass}>Phone / WhatsApp</label>
+            <input id="phone" required type="tel" value={phone}
+              onChange={e => setPhone(e.target.value)}
+              className={inputClass} placeholder="+62 812 0000 0000" />
           </div>
 
-          <div className="mt-8 border-t border-sand-100 pt-6">
-            <h3 className="mb-4 text-lg font-bold text-earth-900">Summary</h3>
-            <div className="mb-2 flex justify-between text-earth-700">
-              <span>Dates</span>
-              <span className="font-medium text-earth-900">
-                {date?.from ? date.from.toLocaleDateString() : '---'} - {date?.to ? date.to.toLocaleDateString() : '---'}
-              </span>
+          {/* Summary box */}
+          {nights > 0 && (
+            <div className="border border-parchment-300 p-6 bg-parchment-50">
+              <p className="mb-4 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Booking Summary</p>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-obsidian-500">Unit</span>
+                  <span className="text-obsidian-900 font-medium">{unit.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-obsidian-500">Duration</span>
+                  <span className="text-obsidian-900">{nights} night{nights > 1 ? "s" : ""}</span>
+                </div>
+                <div className="flex justify-between border-t border-parchment-300 pt-3">
+                  <span className="text-obsidian-900 font-medium">Total</span>
+                  <span className="font-serif text-xl text-obsidian-900">
+                    Rp {totalPrice.toLocaleString("id-ID")}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="mb-4 flex justify-between text-earth-700">
-              <span>Duration</span>
-              <span className="font-medium text-earth-900">{nights} night(s)</span>
-            </div>
-            <div className="flex justify-between border-t border-sand-100 pt-4 text-xl font-bold text-earth-900">
-              <span>Total</span>
-              <span>Rp {totalPrice.toLocaleString('id-ID')}</span>
-            </div>
-          </div>
+          )}
 
           <button
             type="submit"
             disabled={isPending || nights < 1}
-            className="mt-8 w-full rounded-lg bg-earth-800 py-4 text-lg font-bold text-white smooth-transition hover:bg-earth-900 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full bg-obsidian-900 py-5 text-[10px] uppercase tracking-[0.3em] text-parchment-50 transition-colors duration-500 hover:bg-obsidian-800 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {isPending ? "Confirming..." : "Confirm Booking"}
+            {isPending ? "Confirming Reservation…" : "Confirm Reservation"}
           </button>
+
+          <p className="text-center text-[9px] uppercase tracking-[0.2em] text-obsidian-400">
+            No payment required · Reservation confirmed instantly
+          </p>
         </form>
       </div>
     </div>

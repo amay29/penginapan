@@ -1,59 +1,115 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  
-  /* Luxury Boutique / Glamping Palette */
-  --color-forest-900: #1a221f;
-  --color-forest-800: #2c3631;
-  --color-forest-700: #3f4a43;
-  --color-forest-600: #556259;
-  --color-forest-500: #6d7a71;
+  /* ─── Damar Palette: Obsidian × Parchment ──────────────────── */
 
-  --color-linen-900: #d6cfc4;
-  --color-linen-800: #e2dbd0;
-  --color-linen-700: #ebe5dc;
-  --color-linen-100: #f4f0e6;
-  --color-linen-50:  #faf8f5;
+  /* Deep blacks with a warm undertone */
+  --color-obsidian-950: #0d0f0e;
+  --color-obsidian-900: #141916;
+  --color-obsidian-800: #1e2620;
+  --color-obsidian-700: #2c352f;
+  --color-obsidian-600: #3e4d42;
+  --color-obsidian-500: #546358;
+  --color-obsidian-400: #7a8e7f;
+  --color-obsidian-300: #a3b1a6;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
-}
+  /* Warm creams — Parchment */
+  --color-parchment-50:  #faf7f2;
+  --color-parchment-100: #f4efe5;
+  --color-parchment-200: #e8dece;
+  --color-parchment-300: #d9ccb8;
+  --color-parchment-400: #c5b49c;
 
-:root {
-  --background: var(--color-linen-50);
-  --foreground: var(--color-forest-900);
+  /* Accent — raw gold */
+  --color-gold-400: #c9a96e;
+  --color-gold-300: #d4ba87;
+  --color-gold-200: #e3d0a6;
+
+  /* Typography */
+  --font-sans:   var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif:  var(--font-cormorant), ui-serif, Georgia, serif;
+
+  /* Spacing & Sizing */
+  --radius-none: 0;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    background: var(--background);
-    color: var(--foreground);
+    background-color: #faf7f2;
+    color: #141916;
     font-family: var(--font-sans);
+    font-feature-settings: "kern" 1, "liga" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
+  ::selection {
+    background-color: #141916;
+    color: #faf7f2;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
-    font-weight: 400; /* Luxury often uses lighter/normal weights for serif */
+    font-weight: 300;
+    letter-spacing: -0.01em;
   }
+
+  /* Thin elegant scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #a3b1a6; }
 }
 
-/* Micro-interaction utilities */
 @layer utilities {
-  .smooth-transition {
-    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  /* ─── Transitions ───────────────────────────────────────────── */
+  .ease-luxury {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .luxury-link {
-    @apply relative overflow-hidden inline-block;
+
+  /* ─── Animated underline for links ─────────────────────────── */
+  .link-underline {
+    position: relative;
+    display: inline-block;
   }
-  .luxury-link::after {
+  .link-underline::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-full h-[1px] bg-current origin-bottom-right scale-x-0 transition-transform duration-500 ease-out;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .luxury-link:hover::after {
-    @apply origin-bottom-left scale-x-100;
+  .link-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
   }
+
+  /* ─── Marquee ───────────────────────────────────────────────── */
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  /* ─── Fade-up reveal ────────────────────────────────────────── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up {
+    animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .animation-delay-200 { animation-delay: 0.2s; }
+  .animation-delay-400 { animation-delay: 0.4s; }
+  .animation-delay-600 { animation-delay: 0.6s; }
 }
