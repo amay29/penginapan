@@ -60,7 +60,7 @@ export default function AiConcierge() {
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
-          {messages.map(m => (
+          {messages.filter(m => m.content.trim() !== '').map(m => (
             <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div 
                 className={`max-w-[85%] rounded-sm px-4 py-3 text-sm leading-relaxed ${

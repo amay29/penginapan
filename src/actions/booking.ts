@@ -37,7 +37,6 @@ export async function submitBooking(params: SubmitBookingParams) {
       }
     });
 
-    // Send emails asynchronously (don't await so the user doesn't wait for email delivery)
     sendBookingConfirmationEmail(booking, booking.unit.name).catch(console.error);
     sendAdminNotificationEmail(booking, booking.unit.name).catch(console.error);
 

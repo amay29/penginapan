@@ -1,11 +1,8 @@
 import { Resend } from 'resend';
 
-// Only instantiate Resend if the API key exists
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-// Replace this with the email you registered on Resend for testing
-// Since we don't have a verified domain yet, Resend can only send TO this specific email
-const ADMIN_EMAIL = 'admin@damarglamping.com'; // Adjust this if needed, or use a hardcoded testing email
+const ADMIN_EMAIL = 'admin@damarglamping.com'; 
 
 export async function sendBookingConfirmationEmail(booking: any, unitName: string) {
   if (!resend) {
@@ -18,10 +15,10 @@ export async function sendBookingConfirmationEmail(booking: any, unitName: strin
   const total = `Rp ${booking.totalPrice.toLocaleString('id-ID')}`;
 
   try {
-    await resend.emails.send({
-      from: 'Damar Retreats <onboarding@resend.dev>', // Default Resend test email
-      to: booking.guestEmail, // NOTE: If domain isn't verified, this will ONLY work if guestEmail == your resend account email
-      subject: `Reservasi Terkonfirmasi - ${unitName}`,
+    const data = await resend.emails.send({
+      from: 'Damar Retreats <onboarding@resend.dev>',
+      to: booking.guestEmail,
+      subject: `Konfirmasi Reservasi Damar Retreats - ${booking.id.slice(-6).toUpperCase()}`,
       html: `
         <div style="font-family: sans-serif; color: #222120; max-w-lg; margin: 0 auto; padding: 20px;">
           <h1 style="color: #131211; font-weight: normal;">Booking Confirmed!</h1>
@@ -54,10 +51,10 @@ export async function sendAdminNotificationEmail(booking: any, unitName: string)
   const total = `Rp ${booking.totalPrice.toLocaleString('id-ID')}`;
 
   try {
-    await resend.emails.send({
-      from: 'Damar System <onboarding@resend.dev>',
-      to: ADMIN_EMAIL, // Must be the email registered on Resend if domain is not verified
-      subject: `[Booking Baru] ${booking.guestName} - ${unitName}`,
+    const data = await resend.emails.send({
+      from: 'Damar Retreats <onboarding@resend.dev>',
+      to: ADMIN_EMAIL,
+      subject: `[NEW BOOKING] ${unitName} - ${booking.guestName}`,
       html: `
         <div style="font-family: sans-serif; color: #222120;">
           <h2>Ada Booking Baru! 🎉</h2>
