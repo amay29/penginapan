@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { sendBookingConfirmationEmail, sendAdminNotificationEmail } from "@/lib/email";
 
 interface SubmitBookingParams {
   unitId: string;
@@ -30,8 +31,15 @@ export async function submitBooking(params: SubmitBookingParams) {
         guestPhone: params.guestPhone,
         totalPrice: params.totalPrice,
         status:     "CONFIRMED",
+      },
+      include: {
+        unit: true
       }
     });
+
+    // Send emails asynchronously (don't await so the user doesn't wait for email delivery)
+    sendBookingConfirmationEmail(booking, booking.unit.name).catch(console.error);
+    sendAdminNotificationEmail(booking, booking.unit.name).catch(console.error);
 
     revalidatePath(`/unit/${params.unitId}/book`);
     return { success: true, bookingId: booking.id };
