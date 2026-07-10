@@ -2,7 +2,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Tent, CalendarDays, LogOut, ExternalLink } from "lucide-react";
+import { LayoutDashboard, LogOut, Grid2X2, CalendarDays, ExternalLink } from "lucide-react";
+
+const navItems = [
+  { href: "/admin",          icon: LayoutDashboard, label: "Overview"  },
+  { href: "/admin/bookings", icon: CalendarDays,    label: "Bookings"  },
+  { href: "/admin/units",    icon: Grid2X2,         label: "Spaces"    },
+];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -11,68 +17,68 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const initial = session.user.name?.charAt(0).toUpperCase() || "A";
 
   return (
-    <div className="flex min-h-screen bg-parchment-100" style={{ fontFamily: "var(--font-inter), sans-serif" }}>
+    <div className="flex min-h-screen bg-surface-950 text-surface-100 font-sans antialiased">
 
-      {/* ── Sidebar ───────────────────────────────────────────── */}
-      <aside className="hidden md:flex w-64 flex-col bg-obsidian-900 text-parchment-100 fixed inset-y-0 left-0 z-40">
+      {/* ── Sidebar ─────────────────────────────────────────────── */}
+      <aside className="hidden md:flex w-60 flex-col bg-surface-900 border-r border-surface-600/30 fixed inset-y-0 left-0 z-40">
+
         {/* Brand */}
-        <div className="flex h-20 items-center justify-between border-b border-obsidian-800 px-8">
-          <Link href="/" className="font-serif text-xl tracking-[0.15em] text-parchment-100">
+        <div className="h-16 flex items-center justify-between px-5 border-b border-surface-600/30">
+          <Link href="/" className="font-serif text-lg tracking-[0.2em] text-surface-100 hover:text-gold-300 transition-colors duration-300">
             DAMAR
           </Link>
-          <Link href="/" target="_blank" className="text-obsidian-500 hover:text-parchment-100 transition-colors">
-            <ExternalLink className="h-4 w-4" strokeWidth={1} />
+          <Link href="/" target="_blank" className="text-surface-500 hover:text-surface-200 transition-colors">
+            <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
           </Link>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-4 py-8 space-y-1">
-          <p className="mb-4 px-4 text-[9px] uppercase tracking-[0.25em] text-obsidian-600">Management</p>
-          {[
-            { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
-            { href: "/admin/bookings", icon: CalendarDays, label: "Bookings" },
-            { href: "/admin/units", icon: Tent, label: "Units" },
-          ].map(({ href, icon: Icon, label }) => (
+        <nav className="flex-1 px-3 py-6 space-y-0.5">
+          <p className="px-3 mb-3 text-[9px] uppercase tracking-[0.3em] text-surface-500">Management</p>
+          {navItems.map(({ href, icon: Icon, label }) => (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 rounded-none px-4 py-3 text-sm text-obsidian-400 transition-all duration-300 hover:bg-obsidian-800 hover:text-parchment-100"
+              className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-400 rounded-sm hover:text-surface-100 hover:bg-surface-700/50 transition-all duration-200"
             >
-              <Icon className="h-4 w-4" strokeWidth={1.5} />
+              <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
               <span className="tracking-wide">{label}</span>
             </Link>
           ))}
         </nav>
 
-        {/* User */}
-        <div className="border-t border-obsidian-800 p-6 space-y-4">
+        {/* User & Signout */}
+        <div className="px-4 py-5 border-t border-surface-600/30 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center bg-obsidian-700 text-sm font-medium text-parchment-100">
+            <div className="h-8 w-8 rounded-sm bg-surface-700 flex items-center justify-center text-xs font-semibold text-surface-200 shrink-0">
               {initial}
             </div>
-            <div>
-              <p className="text-sm text-parchment-100">{session.user.name}</p>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-obsidian-500">Administrator</p>
+            <div className="min-w-0">
+              <p className="text-sm text-surface-100 truncate">{session.user.name}</p>
+              <p className="text-[9px] uppercase tracking-widest text-surface-500">Administrator</p>
             </div>
           </div>
           <Link
             href="/api/auth/signout"
-            className="flex w-full items-center gap-2 px-0 py-2 text-xs text-obsidian-500 transition-colors hover:text-parchment-100"
+            className="flex items-center gap-2 text-xs tracking-widest uppercase text-surface-500 hover:text-red-400 transition-colors duration-200"
           >
             <LogOut className="h-3.5 w-3.5" strokeWidth={1.5} />
-            <span className="uppercase tracking-[0.15em]">Sign Out</span>
+            Sign Out
           </Link>
         </div>
       </aside>
 
-      {/* ── Main content ─────────────────────────────────────── */}
-      <div className="flex flex-1 flex-col md:ml-64">
-        {/* Mobile header */}
-        <header className="flex h-16 items-center justify-between border-b border-parchment-200 bg-white px-6 md:hidden">
-          <Link href="/" className="font-serif text-xl tracking-[0.15em] text-obsidian-900">DAMAR</Link>
+      {/* ── Main content ─────────────────────────────────────────── */}
+      <div className="flex flex-1 flex-col md:ml-60 min-h-screen">
+        {/* Mobile Header */}
+        <header className="flex h-14 items-center justify-between border-b border-surface-600/30 bg-surface-900 px-5 md:hidden">
+          <Link href="/" className="font-serif text-lg tracking-[0.2em] text-surface-100">DAMAR</Link>
+          <Link href="/api/auth/signout" className="text-surface-500 hover:text-red-400 transition-colors">
+            <LogOut className="h-4 w-4" strokeWidth={1.5} />
+          </Link>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-8 md:p-12">
+        <main className="flex-1 p-6 md:p-10 lg:p-14">
           {children}
         </main>
       </div>

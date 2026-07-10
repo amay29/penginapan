@@ -21,9 +21,25 @@
   --color-parchment-400: #c5b49c;
 
   /* Accent — raw gold */
+  --color-gold-700: #a07840;
+  --color-gold-600: #b38a50;
+  --color-gold-500: #c09a5e;
   --color-gold-400: #c9a96e;
   --color-gold-300: #d4ba87;
   --color-gold-200: #e3d0a6;
+  --color-gold-100: #f0e6cc;
+
+  /* ─── Admin Panel Surface System ────────────────────────────── */
+  /* Warm dark grays — NOT pure black, designed for long-session comfort */
+  --color-surface-950: #131211;  /* page bg — warm near-black                */
+  --color-surface-900: #1a1917;  /* sidebar bg — slightly lighter             */
+  --color-surface-800: #222120;  /* card/panel bg                             */
+  --color-surface-700: #2d2c2a;  /* input / hover surface                     */
+  --color-surface-600: #3d3c39;  /* borders, dividers                         */
+  --color-surface-500: #5c5a56;  /* muted icons                               */
+  --color-surface-400: #8a8880;  /* placeholder, secondary text               */
+  --color-surface-200: #c5c3bb;  /* secondary text                            */
+  --color-surface-100: #e5e3dc;  /* primary text (warm white, not pure white) */
 
   /* Typography */
   --font-sans:   var(--font-inter), ui-sans-serif, system-ui, sans-serif;
