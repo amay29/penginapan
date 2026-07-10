@@ -7,6 +7,7 @@ import { DateRange, Matcher } from "react-day-picker";
 import { differenceInDays, isWithinInterval, startOfDay, isBefore, format } from "date-fns";
 import { submitBooking } from "@/actions/booking";
 import { useRouter } from "next/navigation";
+import { Users, Minus, Plus } from "lucide-react";
 
 interface BookingClientProps {
   unit: Unit;
@@ -15,19 +16,20 @@ interface BookingClientProps {
 
 export default function BookingClient({ unit, existingBookings }: BookingClientProps) {
   const router = useRouter();
-  const [date, setDate] = useState<DateRange | undefined>();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [date, setDate]         = useState<DateRange | undefined>();
+  const [name, setName]         = useState("");
+  const [email, setEmail]       = useState("");
+  const [phone, setPhone]       = useState("");
+  const [guests, setGuests]     = useState(1);
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError]       = useState<string | null>(null);
 
-  const disabledDates = useMemo(() => {
+  const disabledDates = useMemo<Matcher[]>(() => {
     const disabled: Matcher[] = [{ before: startOfDay(new Date()) }];
     existingBookings.forEach(b => {
       disabled.push({
         from: startOfDay(new Date(b.checkIn)),
-        to: startOfDay(new Date(b.checkOut))
+        to:   startOfDay(new Date(b.checkOut)),
       });
     });
     return disabled;
@@ -36,10 +38,10 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
   const handleDateSelect = (newDate: DateRange | undefined) => {
     if (newDate?.from && newDate?.to) {
       const overlap = existingBookings.some(b => {
-        const bIn = startOfDay(new Date(b.checkIn));
+        const bIn  = startOfDay(new Date(b.checkIn));
         const bOut = startOfDay(new Date(b.checkOut));
         return (
-          isWithinInterval(bIn, { start: newDate.from!, end: newDate.to! }) ||
+          isWithinInterval(bIn,  { start: newDate.from!, end: newDate.to! }) ||
           isWithinInterval(bOut, { start: newDate.from!, end: newDate.to! }) ||
           (isBefore(bIn, newDate.from!) && isBefore(newDate.to!, bOut))
         );
@@ -49,25 +51,30 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
     setDate(newDate);
   };
 
-  const nights = date?.from && date?.to ? differenceInDays(date.to, date.from) : 0;
+  const nights     = date?.from && date?.to ? differenceInDays(date.to, date.from) : 0;
   const totalPrice = nights > 0 ? nights * unit.pricePerNight : 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!date?.from || !date?.to || nights < 1) {
-      setError("Please select valid check-in and check-out dates.");
+      setError("Pilih tanggal check-in dan check-out terlebih dahulu.");
+      return;
+    }
+    if (guests > unit.capacity) {
+      setError(`Kapasitas maksimal unit ini adalah ${unit.capacity} tamu.`);
       return;
     }
     setError(null);
     startTransition(async () => {
       const result = await submitBooking({
-        unitId: unit.id,
-        checkIn: date.from!,
-        checkOut: date.to!,
-        guestName: name,
+        unitId:     unit.id,
+        checkIn:    date.from!,
+        checkOut:   date.to!,
+        guestName:  name,
         guestEmail: email,
         guestPhone: phone,
-        totalPrice
+        guestCount: guests,
+        totalPrice,
       });
       if (result.error) setError(result.error);
       else if (result.success)
@@ -75,14 +82,13 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
     });
   };
 
-  const inputClass =
-    "w-full border-0 border-b border-parchment-300 bg-transparent px-0 py-3 text-sm text-obsidian-900 placeholder-obsidian-300 focus:border-obsidian-900 focus:outline-none transition-colors duration-300";
-  const labelClass = "block text-[9px] uppercase tracking-[0.25em] text-obsidian-400 mb-1";
+  const inputClass  = "w-full border-0 border-b border-parchment-300 bg-transparent px-0 py-3 text-sm text-obsidian-900 placeholder-obsidian-300 focus:border-obsidian-900 focus:outline-none transition-colors duration-300";
+  const labelClass  = "block text-[9px] uppercase tracking-[0.25em] text-obsidian-400 mb-1";
 
   return (
     <div className="mx-auto max-w-[1400px] grid gap-16 px-6 py-16 md:px-16 lg:grid-cols-2 lg:gap-24">
 
-      {/* ── Left: Calendar ───────────────────────────────────── */}
+      {/* ── Left: Calendar ──────────────────────────────────────── */}
       <div>
         <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Step 01</p>
         <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Select Dates</h2>
@@ -96,17 +102,16 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
           className="w-full"
         />
 
-        {/* Live price preview */}
         {nights > 0 && (
           <div className="mt-8 border-t border-parchment-300 pt-8">
             <div className="flex justify-between text-sm mb-2">
               <span className="text-obsidian-500">
                 {format(date!.from!, "d MMM")} → {format(date!.to!, "d MMM yyyy")}
               </span>
-              <span className="text-obsidian-700">{nights} nights</span>
+              <span className="text-obsidian-700">{nights} malam</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Estimated Total</span>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Estimasi Total</span>
               <span className="font-serif text-2xl text-obsidian-900">
                 Rp {totalPrice.toLocaleString("id-ID")}
               </span>
@@ -116,12 +121,12 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
 
         {!date?.from && (
           <p className="mt-6 text-xs text-obsidian-400 italic">
-            Click a start date, then an end date on the calendar above.
+            Klik tanggal mulai, lalu tanggal selesai pada kalender di atas.
           </p>
         )}
       </div>
 
-      {/* ── Right: Form ──────────────────────────────────────── */}
+      {/* ── Right: Form ─────────────────────────────────────────── */}
       <div>
         <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Step 02</p>
         <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Your Details</h2>
@@ -137,22 +142,52 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
             <label htmlFor="name" className={labelClass}>Full Name</label>
             <input id="name" required type="text" value={name}
               onChange={e => setName(e.target.value)}
-              className={inputClass} placeholder="Your full name" />
+              className={inputClass} placeholder="Nama lengkap Anda" />
           </div>
+
           <div>
             <label htmlFor="email" className={labelClass}>Email Address</label>
             <input id="email" required type="email" value={email}
               onChange={e => setEmail(e.target.value)}
-              className={inputClass} placeholder="your@email.com" />
+              className={inputClass} placeholder="email@anda.com" />
           </div>
+
           <div>
-            <label htmlFor="phone" className={labelClass}>Phone / WhatsApp</label>
+            <label htmlFor="phone" className={labelClass}>No. WhatsApp</label>
             <input id="phone" required type="tel" value={phone}
               onChange={e => setPhone(e.target.value)}
               className={inputClass} placeholder="+62 812 0000 0000" />
           </div>
 
-          {/* Summary box */}
+          {/* ── Guest Count Selector ─────────────────────────── */}
+          <div>
+            <label className={labelClass}>
+              Jumlah Tamu <span className="text-obsidian-300">(maks. {unit.capacity} orang)</span>
+            </label>
+            <div className="flex items-center gap-5 mt-3">
+              <button
+                type="button"
+                onClick={() => setGuests(g => Math.max(1, g - 1))}
+                className="h-9 w-9 flex items-center justify-center border border-parchment-300 text-obsidian-500 hover:border-obsidian-400 hover:text-obsidian-900 transition-colors"
+              >
+                <Minus className="h-3 w-3" />
+              </button>
+              <span className="w-8 text-center font-serif text-2xl text-obsidian-900">{guests}</span>
+              <button
+                type="button"
+                onClick={() => setGuests(g => Math.min(unit.capacity, g + 1))}
+                className="h-9 w-9 flex items-center justify-center border border-parchment-300 text-obsidian-500 hover:border-obsidian-400 hover:text-obsidian-900 transition-colors"
+              >
+                <Plus className="h-3 w-3" />
+              </button>
+              <div className="flex items-center gap-2 text-xs text-obsidian-400 ml-2">
+                <Users className="h-3.5 w-3.5" />
+                <span>{guests} tamu</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Summary */}
           {nights > 0 && (
             <div className="border border-parchment-300 p-6 bg-parchment-50">
               <p className="mb-4 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Booking Summary</p>
@@ -162,8 +197,12 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
                   <span className="text-obsidian-900 font-medium">{unit.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-obsidian-500">Duration</span>
-                  <span className="text-obsidian-900">{nights} night{nights > 1 ? "s" : ""}</span>
+                  <span className="text-obsidian-500">Tamu</span>
+                  <span className="text-obsidian-900">{guests} orang</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-obsidian-500">Durasi</span>
+                  <span className="text-obsidian-900">{nights} malam</span>
                 </div>
                 <div className="flex justify-between border-t border-parchment-300 pt-3">
                   <span className="text-obsidian-900 font-medium">Total</span>
@@ -180,11 +219,11 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
             disabled={isPending || nights < 1}
             className="w-full bg-obsidian-900 py-5 text-[10px] uppercase tracking-[0.3em] text-parchment-50 transition-colors duration-500 hover:bg-obsidian-800 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {isPending ? "Confirming Reservation…" : "Confirm Reservation"}
+            {isPending ? "Memproses…" : "Konfirmasi Reservasi"}
           </button>
 
           <p className="text-center text-[9px] uppercase tracking-[0.2em] text-obsidian-400">
-            No payment required · Reservation confirmed instantly
+            Tidak ada pembayaran di muka · Reservasi langsung terkonfirmasi
           </p>
         </form>
       </div>
