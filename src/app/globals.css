@@ -1,26 +1,65 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  
+  /* Earthy Tones / Glamping Theme */
+  --color-earth-900: #1c2718;
+  --color-earth-800: #293a23;
+  --color-earth-700: #385030;
+  --color-earth-600: #49683e;
+  --color-earth-500: #5c824e;
+  --color-earth-400: #719c62;
+  --color-earth-300: #88b777;
+  --color-earth-200: #a3cc95;
+  --color-earth-100: #c1e1b6;
+  --color-earth-50:  #e2f3db;
+
+  --color-sand-900: #3c3427;
+  --color-sand-800: #574b39;
+  --color-sand-700: #78684f;
+  --color-sand-600: #988566;
+  --color-sand-500: #b5a07c;
+  --color-sand-400: #cdbb99;
+  --color-sand-300: #e0d3b8;
+  --color-sand-200: #ede5d3;
+  --color-sand-100: #f5f0e6;
+  --color-sand-50:  #fdfcf9;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+}
+
+:root {
+  --background: var(--color-sand-50);
+  --foreground: var(--color-earth-900);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-earth-900);
+    --foreground: var(--color-sand-50);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Micro-interaction utilities */
+@layer utilities {
+  .smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
