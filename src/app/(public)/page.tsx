@@ -1,18 +1,128 @@
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+
+// ── ISR: Rerender at most once per 60s, served from cache otherwise ──
+export const revalidate = 60;
+
+// ── Unit collection: fetched separately so hero renders instantly ──
+async function UnitCollection() {
+  const units = await prisma.unit.findMany({ orderBy: { pricePerNight: "desc" } });
+
+  return (
+    <section id="accommodations" className="py-24 px-6 md:px-12">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="mb-20 grid grid-cols-2 items-end md:grid-cols-3">
+          <div>
+            <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">
+              No. {String(units.length).padStart(2, "0")} Spaces
+            </p>
+            <h2 className="font-serif text-5xl font-light text-obsidian-900 md:text-7xl">
+              The<br />Collection
+            </h2>
+          </div>
+          <div className="hidden md:block" />
+          <p className="text-right text-sm leading-relaxed text-obsidian-500 max-w-xs ml-auto">
+            Each structure is hand-selected for its architecture, its setting,
+            and its ability to make you feel beautifully alone.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-x-8 gap-y-28 md:grid-cols-12">
+          {units.map((unit, i) => {
+            const isEven = i % 2 === 0;
+            const imgCols = isEven ? "md:col-span-7" : "md:col-span-5 md:col-start-8";
+            const textCols = isEven ? "md:col-span-5 md:col-start-8" : "md:col-span-7";
+            return (
+              <div
+                key={unit.id}
+                className={`group md:col-span-12 grid md:grid-cols-12 gap-8 md:gap-12 items-center ${
+                  isEven ? "" : "md:[grid-template-areas:'text_image']"
+                }`}
+              >
+                <Link
+                  href={`/unit/${unit.id}`}
+                  className={`${imgCols} relative block overflow-hidden bg-parchment-200 ${
+                    isEven ? "aspect-[3/4]" : "aspect-[4/3]"
+                  } ${isEven ? "" : "md:order-2"}`}
+                >
+                  <Image
+                    src={unit.photoUrls[0] || "https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=75&w=800"}
+                    alt={unit.name}
+                    fill
+                    className="object-cover transition-transform duration-[1200ms] ease-luxury group-hover:scale-105"
+                  />
+                  <span className="absolute top-6 left-6 font-serif text-xs text-parchment-200 tracking-widest">
+                    0{i + 1}
+                  </span>
+                </Link>
+
+                <div className={`${textCols} flex flex-col justify-center ${isEven ? "md:pl-8" : "md:order-1 md:pr-8"}`}>
+                  <p className="mb-4 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">
+                    {unit.type} · Up to {unit.capacity} guests
+                  </p>
+                  <h3 className="font-serif text-4xl font-light leading-tight text-obsidian-900 md:text-5xl">
+                    {unit.name}
+                  </h3>
+                  <div className="my-8 h-[1px] w-16 bg-parchment-400" />
+                  <p className="mb-10 text-sm leading-relaxed text-obsidian-500 max-w-sm line-clamp-3">
+                    {unit.promotionalCopy || "An intimate retreat designed to dissolve the boundary between inside and outside. Mornings are yours to keep."}
+                  </p>
+                  <div className="flex items-end justify-between">
+                    <Link href={`/unit/${unit.id}`} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-900 pb-0.5">
+                      Discover Space
+                    </Link>
+                    <div className="text-right">
+                      <p className="text-[9px] uppercase tracking-[0.2em] text-obsidian-400 mb-1">From</p>
+                      <p className="font-serif text-2xl text-obsidian-900">
+                        Rp {unit.pricePerNight.toLocaleString("id-ID")}
+                        <span className="text-sm font-sans text-obsidian-500"> /night</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function UnitCollectionSkeleton() {
+  return (
+    <section className="py-24 px-6 md:px-12">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="mb-20">
+          <div className="h-4 w-32 bg-parchment-200 mb-4 animate-pulse" />
+          <div className="h-16 w-64 bg-parchment-200 animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 gap-24 md:grid-cols-2">
+          {[1, 2].map(i => (
+            <div key={i}>
+              <div className="aspect-[3/4] w-full bg-parchment-200 animate-pulse" />
+              <div className="mt-8 space-y-4">
+                <div className="h-3 w-32 bg-parchment-200 animate-pulse" />
+                <div className="h-10 w-56 bg-parchment-200 animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default async function PublicLandingPage() {
-  const units = await prisma.unit.findMany({
-    orderBy: { pricePerNight: "desc" }
-  });
 
   return (
     <article>
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative h-screen w-full overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=90&w=2400"
+          src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=75&w=1400"
           alt="Damar luxury glamping retreat in the forest"
           fill
           className="object-cover"
@@ -55,107 +165,15 @@ export default async function PublicLandingPage() {
       {/* ── HORIZONTAL RULE (editorial) ──────────────────────────── */}
       <div className="mx-6 border-t border-parchment-300 md:mx-12" />
 
-      {/* ── COLLECTION ───────────────────────────────────────────── */}
-      <section id="accommodations" className="py-24 px-6 md:px-12">
-        <div className="mx-auto max-w-[1400px]">
-
-          {/* Section header */}
-          <div className="mb-20 grid grid-cols-2 items-end md:grid-cols-3">
-            <div>
-              <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">
-                No. {String(units.length).padStart(2, "0")} Spaces
-              </p>
-              <h2 className="font-serif text-5xl font-light text-obsidian-900 md:text-7xl">
-                The<br />Collection
-              </h2>
-            </div>
-            <div className="hidden md:block" />
-            <p className="text-right text-sm leading-relaxed text-obsidian-500 max-w-xs ml-auto">
-              Each structure is hand-selected for its architecture, its setting,
-              and its ability to make you feel beautifully alone.
-            </p>
-          </div>
-
-          {/* Staggered editorial grid */}
-          <div className="grid grid-cols-1 gap-x-8 gap-y-28 md:grid-cols-12">
-            {units.map((unit, i) => {
-              // Alternate: large-left / large-right pattern
-              const isEven = i % 2 === 0;
-              const imgCols = isEven ? "md:col-span-7" : "md:col-span-5 md:col-start-8";
-              const textCols = isEven ? "md:col-span-5 md:col-start-8" : "md:col-span-7";
-
-              return (
-                <div
-                  key={unit.id}
-                  className={`group md:col-span-12 grid md:grid-cols-12 gap-8 md:gap-12 items-center ${
-                    isEven ? "" : "md:[grid-template-areas:'text_image']"
-                  }`}
-                >
-                  {/* Image */}
-                  <Link
-                    href={`/unit/${unit.id}`}
-                    className={`${imgCols} relative block overflow-hidden bg-parchment-200 ${
-                      isEven ? "aspect-[3/4]" : "aspect-[4/3]"
-                    } ${isEven ? "" : "md:order-2"}`}
-                  >
-                    <Image
-                      src={
-                        unit.photoUrls[0] ||
-                        "https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80"
-                      }
-                      alt={unit.name}
-                      fill
-                      className="object-cover transition-transform duration-[1200ms] ease-luxury group-hover:scale-105"
-                    />
-                    {/* Number badge */}
-                    <span className="absolute top-6 left-6 font-serif text-xs text-parchment-200 tracking-widest">
-                      0{i + 1}
-                    </span>
-                  </Link>
-
-                  {/* Text */}
-                  <div className={`${textCols} flex flex-col justify-center ${isEven ? "md:pl-8" : "md:order-1 md:pr-8"}`}>
-                    <p className="mb-4 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">
-                      {unit.type} · Up to {unit.capacity} guests
-                    </p>
-                    <h3 className="font-serif text-4xl font-light leading-tight text-obsidian-900 md:text-5xl">
-                      {unit.name}
-                    </h3>
-
-                    <div className="my-8 h-[1px] w-16 bg-parchment-400" />
-
-                    <p className="mb-10 text-sm leading-relaxed text-obsidian-500 max-w-sm line-clamp-3">
-                      {unit.promotionalCopy ||
-                        "An intimate retreat designed to dissolve the boundary between inside and outside. Mornings are yours to keep."}
-                    </p>
-
-                    <div className="flex items-end justify-between">
-                      <Link
-                        href={`/unit/${unit.id}`}
-                        className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-900 pb-0.5"
-                      >
-                        Discover Space
-                      </Link>
-                      <div className="text-right">
-                        <p className="text-[9px] uppercase tracking-[0.2em] text-obsidian-400 mb-1">From</p>
-                        <p className="font-serif text-2xl text-obsidian-900">
-                          Rp {unit.pricePerNight.toLocaleString("id-ID")}
-                          <span className="text-sm font-sans text-obsidian-500"> /night</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* ── COLLECTION: streams in independently, hero shows instantly ── */}
+      <Suspense fallback={<UnitCollectionSkeleton />}>
+        <UnitCollection />
+      </Suspense>
 
       {/* ── FULL-WIDTH IMMERSIVE BANNER ───────────────────────────── */}
       <section className="relative h-[60vh] overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=85&w=2000"
+          src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=75&w=1200"
           alt="Forest glamping atmosphere"
           fill
           className="object-cover"

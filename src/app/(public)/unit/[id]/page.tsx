@@ -3,22 +3,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+export const revalidate = 3600; // 1 hour cache
+
 export default async function UnitDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const unit = await prisma.unit.findUnique({ where: { id: resolvedParams.id } });
   if (!unit) notFound();
 
-  const photos = [
-    unit.photoUrls[0] || "https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80",
-    unit.photoUrls[1] || "https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80",
-    unit.photoUrls[2] || null,
-  ];
+  const photo0 = unit.photoUrls[0] || "https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80";
+  const photo1 = unit.photoUrls[1] || "https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80";
+  const photo2 = unit.photoUrls[2] || null;
 
   return (
     <article className="min-h-screen bg-parchment-50 pt-20">
       {/* ── FULL-BLEED HERO IMAGE ───────────────────────────────── */}
       <div className="relative h-[75vh] w-full overflow-hidden">
-        <Image src={photos[0]} alt={unit.name} fill className="object-cover" priority />
+        <Image src={photo0} alt={unit.name} fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-t from-parchment-50 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 px-6 pb-12 md:px-16 flex items-end justify-between">
           <div>
@@ -37,11 +37,11 @@ export default async function UnitDetailPage({ params }: { params: Promise<{ id:
       {/* ── SECONDARY IMAGES ────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-1 px-1">
         <div className="relative aspect-[16/7] overflow-hidden">
-          <Image src={photos[1]} alt={`${unit.name} interior`} fill className="object-cover" />
+          <Image src={photo1} alt={`${unit.name} interior`} fill className="object-cover" />
         </div>
         <div className="relative aspect-[16/7] overflow-hidden bg-obsidian-800">
-          {photos[2] ? (
-            <Image src={photos[2]} alt={`${unit.name} detail`} fill className="object-cover" />
+          {photo2 ? (
+            <Image src={photo2} alt={`${unit.name} detail`} fill className="object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-obsidian-900">
               <span className="text-[9px] uppercase tracking-[0.3em] text-obsidian-500">More photos coming</span>
