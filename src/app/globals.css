@@ -4,43 +4,26 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   
-  /* Earthy Tones / Glamping Theme */
-  --color-earth-900: #1c2718;
-  --color-earth-800: #293a23;
-  --color-earth-700: #385030;
-  --color-earth-600: #49683e;
-  --color-earth-500: #5c824e;
-  --color-earth-400: #719c62;
-  --color-earth-300: #88b777;
-  --color-earth-200: #a3cc95;
-  --color-earth-100: #c1e1b6;
-  --color-earth-50:  #e2f3db;
+  /* Luxury Boutique / Glamping Palette */
+  --color-forest-900: #1a221f;
+  --color-forest-800: #2c3631;
+  --color-forest-700: #3f4a43;
+  --color-forest-600: #556259;
+  --color-forest-500: #6d7a71;
 
-  --color-sand-900: #3c3427;
-  --color-sand-800: #574b39;
-  --color-sand-700: #78684f;
-  --color-sand-600: #988566;
-  --color-sand-500: #b5a07c;
-  --color-sand-400: #cdbb99;
-  --color-sand-300: #e0d3b8;
-  --color-sand-200: #ede5d3;
-  --color-sand-100: #f5f0e6;
-  --color-sand-50:  #fdfcf9;
+  --color-linen-900: #d6cfc4;
+  --color-linen-800: #e2dbd0;
+  --color-linen-700: #ebe5dc;
+  --color-linen-100: #f4f0e6;
+  --color-linen-50:  #faf8f5;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
 }
 
 :root {
-  --background: var(--color-sand-50);
-  --foreground: var(--color-earth-900);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--color-earth-900);
-    --foreground: var(--color-sand-50);
-  }
+  --background: var(--color-linen-50);
+  --foreground: var(--color-forest-900);
 }
 
 @layer base {
@@ -54,12 +37,23 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
+    font-weight: 400; /* Luxury often uses lighter/normal weights for serif */
   }
 }
 
 /* Micro-interaction utilities */
 @layer utilities {
   .smooth-transition {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .luxury-link {
+    @apply relative overflow-hidden inline-block;
+  }
+  .luxury-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-[1px] bg-current origin-bottom-right scale-x-0 transition-transform duration-500 ease-out;
+  }
+  .luxury-link:hover::after {
+    @apply origin-bottom-left scale-x-100;
   }
 }
