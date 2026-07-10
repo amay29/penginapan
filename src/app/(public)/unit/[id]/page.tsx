@@ -3,7 +3,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { Metadata } from "next";
+
 export const revalidate = 3600; // 1 hour cache
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const unit = await prisma.unit.findUnique({ where: { id: resolvedParams.id } });
+  
+  if (!unit) return { title: "Unit Not Found" };
+
+  return {
+    title: `${unit.name} | ${unit.type}`,
+    description: unit.promotionalCopy?.slice(0, 160) || `Experience luxury at ${unit.name}, a premium ${unit.type} offering an unforgettable retreat in nature.`,
+    openGraph: {
+      images: [unit.photoUrls[0]],
+    },
+  };
+}
 
 export default async function UnitDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -117,12 +134,23 @@ export default async function UnitDetailPage({ params }: { params: Promise<{ id:
                 Check Availability
               </Link>
 
-              <Link
-                href="/"
-                className="mt-4 block w-full border border-parchment-300 py-4 text-center text-[10px] uppercase tracking-[0.3em] text-obsidian-600 transition-colors duration-300 hover:border-obsidian-400 hover:text-obsidian-900"
-              >
-                ← Back to Retreats
-              </Link>
+              <div className="mt-4 flex flex-col gap-3">
+                <a
+                  href="https://wa.me/6281234567890?text=Hello%2C%20I'm%20interested%20in%20booking%20a%20stay."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full border border-green-700/30 bg-green-50 py-4 text-center text-[10px] uppercase tracking-[0.3em] text-green-800 transition-colors duration-300 hover:bg-green-100 hover:border-green-700/50"
+                >
+                  Chat via WhatsApp
+                </a>
+
+                <Link
+                  href="/"
+                  className="block w-full border border-parchment-300 py-4 text-center text-[10px] uppercase tracking-[0.3em] text-obsidian-600 transition-colors duration-300 hover:border-obsidian-400 hover:text-obsidian-900"
+                >
+                  ← Back to Retreats
+                </Link>
+              </div>
             </div>
           </div>
         </div>
