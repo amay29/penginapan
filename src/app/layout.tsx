@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
-// Using Cormorant Garamond — the choice of Chanel, Louis Vuitton, Bottega Veneta
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -18,21 +17,21 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Damar Retreats",
-    default: "Damar Retreats — Luxury Glamping & A-Frame",
+    template: "%s | Rosa Glamping & Pool Ciparay",
+    default: "Rosa Glamping & Pool — Staycation Syariah Ciparay, Bandung",
   },
-  description: "An exclusive sanctuary where modern luxury meets the untamed beauty of nature. Discover our premium A-Frame cabins and luxury tents.",
-  keywords: ["glamping", "a-frame", "luxury resort", "nature retreat", "damar", "staycation"],
+  description: "Nikmati pengalaman glamping dan kolam renang yang nyaman, asri, dan terjangkau di Ciparay, Bandung. Cocok untuk keluarga, pasangan halal, dan rombongan. Properti syariah.",
+  keywords: ["glamping ciparay", "kolam renang ciparay", "staycation bandung", "penginapan syariah ciparay", "rosa glamping", "rosa swimming pool"],
   openGraph: {
-    title: "Damar Retreats",
-    description: "An exclusive sanctuary where modern luxury meets the untamed beauty of nature.",
-    url: "https://damarglamping.com",
-    siteName: "Damar Retreats",
+    title: "Rosa Glamping & Pool Ciparay",
+    description: "Staycation nyaman di tengah alam Ciparay, Bandung. Ada kolam renang, kamar ber-AC, kafe, dan suasana yang sejuk dan asri.",
+    url: "https://rosaglamping.com",
+    siteName: "Rosa Glamping & Pool",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&w=1200&h=630&q=80",
-        width: 1200,
-        height: 630,
+        url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/798760522.jpg?k=e6b10381b25574e277b2204741b734f853eb40b9f13345586482665778a90630&o=&hp=1",
+        width: 1024,
+        height: 768,
       },
     ],
     locale: "id_ID",
@@ -47,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${inter.variable} ${cormorant.variable} h-full`}
     >
       <body className="min-h-full flex flex-col bg-parchment-50 text-obsidian-900 antialiased">

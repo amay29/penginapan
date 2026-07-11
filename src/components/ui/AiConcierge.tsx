@@ -46,8 +46,8 @@ export default function AiConcierge() {
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-gold-400" />
             <div>
-              <h3 className="font-serif text-lg tracking-wide">Damar AI</h3>
-              <p className="text-[9px] uppercase tracking-widest text-obsidian-400">Virtual Concierge</p>
+              <h3 className="font-serif text-lg tracking-wide">Rosa AI</h3>
+              <p className="text-[9px] uppercase tracking-widest text-obsidian-400">Asisten Virtual</p>
             </div>
           </div>
           <button 

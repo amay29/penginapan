@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X, Trees, Compass, Tent, Mail, Phone, MapPin } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import AiConcierge from "@/components/ui/AiConcierge";
 
 export default function PublicLayout({
@@ -29,7 +29,7 @@ export default function PublicLayout({
             : "bg-transparent"
         }`}
       >
-        <div className="mx-auto flex h-20 max-w-350 items-center justify-between px-6 md:px-12">
+        <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 md:px-12">
           {/* Left nav */}
           <nav className="hidden flex-1 items-center gap-10 md:flex">
             <Link
@@ -38,27 +38,32 @@ export default function PublicLayout({
                 scrolled ? "text-obsidian-700" : "text-parchment-100"
               }`}
             >
-              Retreats
+              Kamar & Vila
             </Link>
             <Link
-              href="/"
+              href="/#kolam"
               className={`link-underline text-[10px] uppercase tracking-[0.25em] transition-colors duration-500 ${
                 scrolled ? "text-obsidian-700" : "text-parchment-100"
               }`}
             >
-              Journal
+              Kolam Renang
             </Link>
           </nav>
 
           {/* Center logo */}
           <div className="flex flex-1 justify-center">
-            <Link href="/" className="group">
+            <Link href="/" className="group text-center">
               <span
-                className={`font-serif text-[1.75rem] font-light tracking-[0.25em] transition-colors duration-500 md:text-[2rem] ${
+                className={`font-serif text-[1.5rem] font-light tracking-[0.2em] transition-colors duration-500 md:text-[1.75rem] ${
                   scrolled ? "text-obsidian-900" : "text-parchment-50"
                 }`}
               >
-                DAMAR
+                ROSA
+              </span>
+              <span className={`block text-[9px] uppercase tracking-[0.3em] transition-colors duration-500 ${
+                scrolled ? "text-obsidian-500" : "text-parchment-300"
+              }`}>
+                Glamping & Pool
               </span>
             </Link>
           </div>
@@ -71,7 +76,7 @@ export default function PublicLayout({
                 scrolled ? "text-obsidian-700" : "text-parchment-100"
               }`}
             >
-              Admin
+              Staff
             </Link>
             <Link
               href="/#accommodations"
@@ -81,7 +86,7 @@ export default function PublicLayout({
                   : "border-parchment-100 text-parchment-50 hover:bg-parchment-50 hover:text-obsidian-900"
               }`}
             >
-              Book Now
+              Pesan Sekarang
             </Link>
           </div>
 
@@ -105,10 +110,10 @@ export default function PublicLayout({
           }`}
         >
           <nav className="flex flex-col gap-6 px-6 py-8">
-            <Link href="/#accommodations" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Retreats</Link>
-            <Link href="/" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Journal</Link>
-            <Link href="/admin/login" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Admin</Link>
-            <Link href="/#accommodations" onClick={() => setMenuOpen(false)} className="mt-2 border border-obsidian-900 px-7 py-3 text-center text-[10px] uppercase tracking-[0.25em] text-obsidian-900 w-full">Book Now</Link>
+            <Link href="/#accommodations" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Kamar & Vila</Link>
+            <Link href="/#kolam" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Kolam Renang</Link>
+            <Link href="/admin/login" onClick={() => setMenuOpen(false)} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-700 w-fit">Staff</Link>
+            <Link href="/#accommodations" onClick={() => setMenuOpen(false)} className="mt-2 border border-obsidian-900 px-7 py-3 text-center text-[10px] uppercase tracking-[0.25em] text-obsidian-900 w-full">Pesan Sekarang</Link>
           </nav>
         </div>
       </header>
@@ -120,11 +125,13 @@ export default function PublicLayout({
         <div className="flex w-max animate-marquee gap-0">
           {Array.from({ length: 6 }).map((_, i) => (
             <span key={i} className="flex items-center gap-8 px-8 text-[10px] uppercase tracking-[0.3em] text-obsidian-400">
-              <span>Luxury Glamping</span>
+              <span>Glamping Syariah</span>
               <span className="text-gold-400">✦</span>
-              <span>A-Frame Retreats</span>
+              <span>Kolam Renang</span>
               <span className="text-gold-400">✦</span>
-              <span>Nature Escapes</span>
+              <span>Ciparay, Bandung</span>
+              <span className="text-gold-400">✦</span>
+              <span>Cocok Untuk Keluarga</span>
               <span className="text-gold-400">✦</span>
             </span>
           ))}
@@ -135,39 +142,56 @@ export default function PublicLayout({
       <footer className="bg-obsidian-900 text-parchment-100">
         <div className="mx-auto max-w-[1400px] px-6 py-24 md:px-12">
           <div className="grid gap-16 md:grid-cols-12">
-            <div className="md:col-span-6">
-              <p className="mb-6 font-serif text-5xl font-light tracking-[0.15em] md:text-7xl">
-                DAMAR
+            <div className="md:col-span-5">
+              <p className="mb-2 font-serif text-5xl font-light tracking-[0.15em] md:text-6xl">
+                ROSA
               </p>
+              <p className="mb-6 text-[10px] uppercase tracking-[0.3em] text-obsidian-500">Glamping & Pool · Ciparay</p>
               <p className="max-w-sm text-sm leading-relaxed text-obsidian-400">
-                An exclusive sanctuary where modern luxury meets the untamed beauty of nature.
-                Each space is a love letter to the wilderness.
+                Tempat istirahat yang nyaman dan asri di Kampung Lebak Biru, Ciheulang, Kecamatan Ciparay, Bandung. Properti syariah — aman, nyaman, dan terpercaya untuk keluarga.
               </p>
             </div>
             <div className="md:col-span-3">
-              <p className="mb-6 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">Explore</p>
+              <p className="mb-6 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">Jelajahi</p>
               <ul className="space-y-4 text-sm text-obsidian-400">
-                <li><Link href="/#accommodations" className="link-underline hover:text-parchment-100 transition-colors duration-300">Retreats</Link></li>
-                <li><Link href="/" className="link-underline hover:text-parchment-100 transition-colors duration-300">Journal</Link></li>
-                <li><Link href="/" className="link-underline hover:text-parchment-100 transition-colors duration-300">Contact</Link></li>
+                <li><Link href="/#accommodations" className="link-underline hover:text-parchment-100 transition-colors duration-300">Kamar & Vila</Link></li>
+                <li><Link href="/#kolam" className="link-underline hover:text-parchment-100 transition-colors duration-300">Kolam Renang</Link></li>
+                <li><Link href="/#accommodations" className="link-underline hover:text-parchment-100 transition-colors duration-300">Cara Pesan</Link></li>
               </ul>
             </div>
-            <div className="md:col-span-3">
-              <p className="mb-6 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">Follow</p>
+            <div className="md:col-span-4">
+              <p className="mb-6 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">Hubungi Kami</p>
               <ul className="space-y-4 text-sm text-obsidian-400">
-                <li><Link href="#" className="link-underline hover:text-parchment-100 transition-colors duration-300">Instagram</Link></li>
-                <li><Link href="#" className="link-underline hover:text-parchment-100 transition-colors duration-300">Pinterest</Link></li>
-                <li><Link href="/admin/login" className="link-underline hover:text-parchment-100 transition-colors duration-300">Admin Portal</Link></li>
+                <li>
+                  <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="link-underline hover:text-parchment-100 transition-colors duration-300">
+                    WhatsApp
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="link-underline hover:text-parchment-100 transition-colors duration-300">
+                    Instagram
+                  </a>
+                </li>
+                <li>
+                  <Link href="/admin/login" className="link-underline hover:text-parchment-100 transition-colors duration-300">
+                    Staff Portal
+                  </Link>
+                </li>
               </ul>
+              <p className="mt-6 text-xs leading-relaxed text-obsidian-600">
+                Kp. Lebak Biru, Ciheulang,<br />
+                Kec. Ciparay, Kab. Bandung,<br />
+                Jawa Barat 40381
+              </p>
             </div>
           </div>
 
           <div className="mt-20 flex flex-col items-center justify-between border-t border-obsidian-800 pt-8 md:flex-row">
             <p className="text-[10px] uppercase tracking-[0.2em] text-obsidian-600">
-              © {new Date().getFullYear()} Damar Retreats
+              © {new Date().getFullYear()} Rosa Glamping & Pool Ciparay
             </p>
             <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-obsidian-600 md:mt-0">
-              Crafted with intention
+              Properti Syariah · Bandung Selatan
             </p>
           </div>
         </div>

@@ -3,29 +3,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-// ── ISR: Rerender at most once per 60s, served from cache otherwise ──
 export const revalidate = 60;
 
-// ── Unit collection: fetched separately so hero renders instantly ──
 async function UnitCollection() {
   const units = await prisma.unit.findMany({ orderBy: { pricePerNight: "desc" } });
 
   return (
     <section id="accommodations" className="py-24 px-6 md:px-12">
-      <div className="mx-auto max-w-350">
+      <div className="mx-auto max-w-[1400px]">
         <div className="mb-20 grid grid-cols-2 items-end md:grid-cols-3">
           <div>
             <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">
-              No. {String(units.length).padStart(2, "0")} Spaces
+              {String(units.length).padStart(2, "0")} Pilihan Kamar
             </p>
             <h2 className="font-serif text-5xl font-light text-obsidian-900 md:text-7xl">
-              The<br />Collection
+              Kamar &<br />Vila Kami
             </h2>
           </div>
           <div className="hidden md:block" />
           <p className="text-right text-sm leading-relaxed text-obsidian-500 max-w-xs ml-auto">
-            Each structure is hand-selected for its architecture, its setting,
-            and its ability to make you feel beautifully alone.
+            Setiap kamar dirancang untuk memberikan kenyamanan maksimal di tengah alam Ciparay yang sejuk dan asri.
           </p>
         </div>
 
@@ -44,11 +41,11 @@ async function UnitCollection() {
                 <Link
                   href={`/unit/${unit.id}`}
                   className={`${imgCols} relative block overflow-hidden bg-parchment-200 ${
-                    isEven ? "aspect-[3/4]" : "aspect-[4/3]"
+                    isEven ? "aspect-[3/4]" : "aspect-4/3"
                   } ${isEven ? "" : "md:order-2"}`}
                 >
                   <Image
-                    src={unit.photoUrls[0] || "https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=75&w=800"}
+                    src={unit.photoUrls[0] || "https://cf.bstatic.com/xdata/images/hotel/max1024x768/798760522.jpg?k=e6b10381b25574e277b2204741b734f853eb40b9f13345586482665778a90630&o=&hp=1"}
                     alt={unit.name}
                     fill
                     className="object-cover transition-transform duration-[1200ms] ease-luxury group-hover:scale-105"
@@ -60,24 +57,24 @@ async function UnitCollection() {
 
                 <div className={`${textCols} flex flex-col justify-center ${isEven ? "md:pl-8" : "md:order-1 md:pr-8"}`}>
                   <p className="mb-4 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">
-                    {unit.type} · Up to {unit.capacity} guests
+                    {unit.type} · Maks. {unit.capacity} tamu
                   </p>
                   <h3 className="font-serif text-4xl font-light leading-tight text-obsidian-900 md:text-5xl">
                     {unit.name}
                   </h3>
                   <div className="my-8 h-[1px] w-16 bg-parchment-400" />
                   <p className="mb-10 text-sm leading-relaxed text-obsidian-500 max-w-sm line-clamp-3">
-                    {unit.promotionalCopy || "An intimate retreat designed to dissolve the boundary between inside and outside. Mornings are yours to keep."}
+                    {unit.promotionalCopy || "Kamar yang nyaman dengan fasilitas lengkap. Cocok untuk keluarga maupun pasangan yang ingin menikmati suasana Ciparay yang asri dan sejuk."}
                   </p>
                   <div className="flex items-end justify-between">
                     <Link href={`/unit/${unit.id}`} className="link-underline text-[10px] uppercase tracking-[0.25em] text-obsidian-900 pb-0.5">
-                      Discover Space
+                      Lihat Detail
                     </Link>
                     <div className="text-right">
-                      <p className="text-[9px] uppercase tracking-[0.2em] text-obsidian-400 mb-1">From</p>
+                      <p className="text-[9px] uppercase tracking-[0.2em] text-obsidian-400 mb-1">Mulai dari</p>
                       <p className="font-serif text-2xl text-obsidian-900">
                         Rp {unit.pricePerNight.toLocaleString("id-ID")}
-                        <span className="text-sm font-sans text-obsidian-500"> /night</span>
+                        <span className="text-sm font-sans text-obsidian-500"> /malam</span>
                       </p>
                     </div>
                   </div>
@@ -122,72 +119,97 @@ export default async function PublicLandingPage() {
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative h-screen w-full overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=75&w=1400"
-          alt="Damar luxury glamping retreat in the forest"
+          src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/798760522.jpg?k=e6b10381b25574e277b2204741b734f853eb40b9f13345586482665778a90630&o=&hp=1"
+          alt="Rosa Glamping and Pool Ciparay — kolam renang dan penginapan"
           fill
           className="object-cover"
           priority
         />
-        {/* Gradient overlay — heavier at bottom for text breathing room */}
         <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/60 via-obsidian-950/20 to-obsidian-950/70" />
 
-        {/* Hero text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
           <p className="animate-fade-up animation-delay-200 mb-4 text-[10px] uppercase tracking-[0.4em] text-gold-300">
-            Est. 2024 · West Java, Indonesia
+            Glamping & Pool · Ciparay, Bandung
           </p>
-          <h1 className="animate-fade-up animation-delay-400 font-serif text-[clamp(4rem,12vw,10rem)] font-light leading-none tracking-[0.06em] text-parchment-50">
-            DAMAR
+          <h1 className="animate-fade-up animation-delay-400 font-serif text-[clamp(3.5rem,11vw,9rem)] font-light leading-none tracking-[0.06em] text-parchment-50">
+            ROSA
           </h1>
-          <p className="animate-fade-up animation-delay-600 mt-6 font-serif text-xl font-light italic text-parchment-200 max-w-md">
-            A sanctuary of quiet luxury amidst the wild
+          <p className="animate-fade-up animation-delay-500 mt-1 text-[10px] uppercase tracking-[0.3em] text-parchment-300">
+            Glamping & Pool
           </p>
+          <p className="animate-fade-up animation-delay-600 mt-6 font-serif text-xl font-light italic text-parchment-200 max-w-md">
+            Tempat istirahat yang asri, nyaman, dan halal untuk seluruh keluarga
+          </p>
+          <Link
+            href="/#accommodations"
+            className="animate-fade-up animation-delay-600 mt-10 border border-parchment-200 px-10 py-4 text-[10px] uppercase tracking-[0.3em] text-parchment-100 hover:bg-parchment-50 hover:text-obsidian-900 transition-colors duration-500"
+          >
+            Lihat Kamar
+          </Link>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-up animation-delay-600">
-          <span className="text-[9px] uppercase tracking-[0.3em] text-parchment-300">Scroll</span>
+          <span className="text-[9px] uppercase tracking-[0.3em] text-parchment-300">Gulir</span>
           <div className="h-12 w-[1px] bg-gradient-to-b from-parchment-300 to-transparent" />
         </div>
       </section>
 
-      {/* ── PHILOSOPHY ───────────────────────────────────────────── */}
+      {/* ── KEUNGGULAN ────────────────────────────────────────────── */}
       <section className="py-32 px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="mb-8 text-[10px] uppercase tracking-[0.3em] text-obsidian-500">Our Philosophy</p>
+          <p className="mb-8 text-[10px] uppercase tracking-[0.3em] text-obsidian-500">Kenapa Rosa?</p>
           <blockquote className="font-serif text-3xl font-light leading-relaxed text-obsidian-900 md:text-5xl">
-            "We believe that true luxury is not in excess,
-            but in the perfection of simplicity."
+            "Alam yang sejuk, kolam yang jernih, dan kamar yang bersih — semua ada di sini."
           </blockquote>
+          <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3 text-left">
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.3em] text-obsidian-400 mb-3">01</p>
+              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Properti Syariah</h3>
+              <p className="text-sm leading-relaxed text-obsidian-500">Aman dan nyaman untuk keluarga dan pasangan halal. Tidak perlu khawatir soal keamanan dan kenyamanan selama menginap.</p>
+            </div>
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.3em] text-obsidian-400 mb-3">02</p>
+              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Kolam Renang</h3>
+              <p className="text-sm leading-relaxed text-obsidian-500">Kolam renang outdoor yang bersih dan terawat. Cocok untuk anak-anak hingga orang dewasa, dengan latar alam yang menyegarkan.</p>
+            </div>
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.3em] text-obsidian-400 mb-3">03</p>
+              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Suasana Asri</h3>
+              <p className="text-sm leading-relaxed text-obsidian-500">Terletak di kaki gunung Ciparay dengan udara yang sejuk dan pemandangan alam yang indah. Kabur sejenak dari hiruk-pikuk kota.</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ── HORIZONTAL RULE (editorial) ──────────────────────────── */}
       <div className="mx-6 border-t border-parchment-300 md:mx-12" />
 
-      {/* ── COLLECTION: streams in independently, hero shows instantly ── */}
+      {/* ── COLLECTION ────────────────────────────────────────────── */}
       <Suspense fallback={<UnitCollectionSkeleton />}>
         <UnitCollection />
       </Suspense>
 
-      {/* ── FULL-WIDTH IMMERSIVE BANNER ───────────────────────────── */}
-      <section className="relative h-[60vh] overflow-hidden">
+      {/* ── KOLAM RENANG BANNER ────────────────────────────────────── */}
+      <section id="kolam" className="relative h-[60vh] overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=75&w=1200"
-          alt="Forest glamping atmosphere"
+          src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/798760496.jpg?k=4843aeb3415768a213bb285fed6ede55d96acebd8cacd16fcd901a3aa258a909&o=&hp=1"
+          alt="Rosa Swimming Pool — kolam renang outdoor Rosa Glamping Ciparay"
           fill
           className="object-cover"
         />
         <div className="absolute inset-0 bg-obsidian-950/50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <p className="mb-3 text-[10px] uppercase tracking-[0.4em] text-gold-300">Fasilitas Unggulan</p>
           <p className="mb-6 font-serif text-3xl font-light italic text-parchment-100 md:text-5xl">
-            "Step outside. Stay inside luxury."
+            "Rosa Swimming Pool"
+          </p>
+          <p className="mb-8 text-sm text-parchment-300 max-w-md">
+            Kolam renang outdoor yang bersih dan terawat — tersedia untuk tamu menginap maupun pengunjung harian.
           </p>
           <Link
             href="/#accommodations"
-            className="mt-4 border border-parchment-200 px-10 py-4 text-[10px] uppercase tracking-[0.3em] text-parchment-100 hover:bg-parchment-50 hover:text-obsidian-900 transition-colors duration-500"
+            className="border border-parchment-200 px-10 py-4 text-[10px] uppercase tracking-[0.3em] text-parchment-100 hover:bg-parchment-50 hover:text-obsidian-900 transition-colors duration-500"
           >
-            Explore Retreats
+            Pesan Sekarang
           </Link>
         </div>
       </section>

@@ -25,7 +25,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* Brand */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-surface-600/30">
           <Link href="/" className="font-serif text-lg tracking-[0.2em] text-surface-100 hover:text-gold-300 transition-colors duration-300">
-            DAMAR
+            ROSA
           </Link>
           <Link href="/" target="_blank" className="text-surface-500 hover:text-surface-200 transition-colors">
             <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
@@ -72,7 +72,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="flex flex-1 flex-col md:ml-60 min-h-screen">
         {/* Mobile Header */}
         <header className="flex h-14 items-center justify-between border-b border-surface-600/30 bg-surface-900 px-5 md:hidden">
-          <Link href="/" className="font-serif text-lg tracking-[0.2em] text-surface-100">DAMAR</Link>
+          <Link href="/" className="font-serif text-lg tracking-[0.2em] text-surface-100">ROSA</Link>
           <Link href="/api/auth/signout" className="text-surface-500 hover:text-red-400 transition-colors">
             <LogOut className="h-4 w-4" strokeWidth={1.5} />
           </Link>
