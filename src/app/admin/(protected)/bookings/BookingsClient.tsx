@@ -10,9 +10,11 @@ const STATUS_STYLE: Record<string, string> = {
   CONFIRMED: "bg-gold-700/20 text-gold-400 border-gold-700/30",
   CANCELLED: "bg-red-900/20 text-red-400 border-red-900/30",
   PENDING:   "bg-surface-700 text-surface-400 border-surface-600/40",
+  CHECKED_IN: "bg-emerald-900/20 text-emerald-400 border-emerald-900/30",
+  COMPLETED: "bg-blue-900/20 text-blue-400 border-blue-900/30",
 };
 
-const ALL_STATUSES = ["ALL", "PENDING", "CONFIRMED", "CANCELLED"];
+const ALL_STATUSES = ["ALL", "PENDING", "CONFIRMED", "CHECKED_IN", "COMPLETED", "CANCELLED"];
 
 export default function BookingsClient({ bookings }: { bookings: any[] }) {
   const router = useRouter();
@@ -113,7 +115,7 @@ export default function BookingsClient({ bookings }: { bookings: any[] }) {
           <div className="bg-surface-800 border border-surface-600/30 rounded-sm overflow-hidden">
             {/* Column Headers */}
             <div className="hidden lg:grid grid-cols-[1.4fr_1.2fr_1fr_auto_auto_auto] gap-4 px-6 py-3 border-b border-surface-600/30 bg-surface-900/50">
-              {["Guest", "Space & Dates", "Total", "Status", "Update", ""].map((h, i) => (
+              {["Guest", "Space & Dates", "Total", "Status", "Actions", ""].map((h, i) => (
                 <p key={i} className="text-[9px] uppercase tracking-[0.25em] text-surface-500">{h}</p>
               ))}
             </div>
@@ -160,23 +162,47 @@ export default function BookingsClient({ bookings }: { bookings: any[] }) {
                     {booking.status}
                   </span>
 
-                  {/* Status Dropdown */}
-                  <div className="relative w-fit">
-                    <select
-                      disabled={isPending}
-                      value={booking.status}
-                      onChange={(e) => handleStatusChange(booking.id, e.target.value)}
-                      className="appearance-none cursor-pointer text-[10px] uppercase tracking-widest bg-surface-700 border border-surface-600/50 text-surface-200 px-3 py-2 pr-7 rounded-sm hover:border-surface-400/50 focus:outline-none focus:border-gold-600 disabled:opacity-50 transition-colors duration-200"
-                    >
-                      <option value="PENDING"   className="bg-surface-900">Pending</option>
-                      <option value="CONFIRMED" className="bg-surface-900">Confirmed</option>
-                      <option value="CANCELLED" className="bg-surface-900">Cancelled</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-surface-500">
-                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7"/>
-                      </svg>
-                    </div>
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2">
+                    {booking.status === "PENDING" && (
+                      <>
+                        <button
+                          onClick={() => handleStatusChange(booking.id, "CONFIRMED")}
+                          disabled={isPending}
+                          className="px-3 py-1.5 bg-gold-600 text-surface-950 text-[10px] uppercase tracking-widest font-semibold rounded-sm hover:bg-gold-500 transition-colors disabled:opacity-50"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => handleStatusChange(booking.id, "CANCELLED")}
+                          disabled={isPending}
+                          className="px-3 py-1.5 bg-surface-700 text-red-400 text-[10px] uppercase tracking-widest font-semibold rounded-sm hover:bg-surface-600 transition-colors disabled:opacity-50"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                    {booking.status === "CONFIRMED" && (
+                      <button
+                        onClick={() => handleStatusChange(booking.id, "CHECKED_IN")}
+                        disabled={isPending}
+                        className="px-3 py-1.5 bg-emerald-600 text-surface-950 text-[10px] uppercase tracking-widest font-semibold rounded-sm hover:bg-emerald-500 transition-colors disabled:opacity-50"
+                      >
+                        Check In
+                      </button>
+                    )}
+                    {booking.status === "CHECKED_IN" && (
+                      <button
+                        onClick={() => handleStatusChange(booking.id, "COMPLETED")}
+                        disabled={isPending}
+                        className="px-3 py-1.5 bg-blue-600 text-surface-950 text-[10px] uppercase tracking-widest font-semibold rounded-sm hover:bg-blue-500 transition-colors disabled:opacity-50"
+                      >
+                        Check Out
+                      </button>
+                    )}
+                    {(booking.status === "COMPLETED" || booking.status === "CANCELLED") && (
+                      <span className="text-[10px] text-surface-500 italic tracking-wider">—</span>
+                    )}
                   </div>
 
                   {/* Delete */}
