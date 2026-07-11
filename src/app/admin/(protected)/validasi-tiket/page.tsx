@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { validateTicket } from "@/actions/pool-admin";
-import { ScanLine, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { ScanLine, Loader2, CheckCircle2, XCircle, Camera, CameraOff } from "lucide-react";
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 export default function TicketScannerPage() {
   const [token, setToken] = useState("");
@@ -12,18 +13,40 @@ export default function TicketScannerPage() {
     error?: string;
     ticket?: any;
   } | null>(null);
+  
+  const [cameraActive, setCameraActive] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const handleScan = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!token) return;
+  useEffect(() => {
+    audioRef.current = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'); // beep sound
+  }, []);
+
+  const processScan = async (scannedToken: string) => {
+    if (!scannedToken || loading) return;
+    
+    // Play beep
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => {});
+    }
 
     setLoading(true);
     setResult(null);
 
-    const res = await validateTicket(token);
+    const res = await validateTicket(scannedToken);
     setResult(res);
     setLoading(false);
     setToken("");
+    
+    // Auto turn off camera if success to prevent multiple scans
+    if (res.success) {
+      setCameraActive(false);
+    }
+  };
+
+  const handleScanForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await processScan(token);
   };
 
   return (
@@ -35,13 +58,39 @@ export default function TicketScannerPage() {
 
       <div className="bg-surface-900 border border-surface-600/30 p-8">
         
-        {/* Placeholder for actual camera scanner in a real PWA app */}
-        <div className="aspect-video bg-surface-950 border-2 border-dashed border-surface-600/50 flex flex-col items-center justify-center mb-8 rounded-sm">
-          <ScanLine className="h-12 w-12 text-surface-600 mb-4" />
-          <p className="text-xs text-surface-500 uppercase tracking-widest">Kamera Scanner (Simulasi)</p>
+        <div className="mb-8">
+          {cameraActive ? (
+            <div className="aspect-video bg-black overflow-hidden relative border border-surface-600/50 rounded-sm">
+              <Scanner 
+                onScan={(detectedCodes) => {
+                  if (detectedCodes.length > 0 && !loading) {
+                    processScan(detectedCodes[0].rawValue);
+                  }
+                }}
+                onError={(error) => console.error(error)}
+                styles={{ container: { width: '100%', height: '100%' } }}
+              />
+              <button 
+                onClick={() => setCameraActive(false)}
+                className="absolute top-4 right-4 bg-surface-950/80 text-surface-100 p-2 hover:bg-surface-800 transition-colors rounded-sm"
+              >
+                <CameraOff className="h-5 w-5" />
+              </button>
+            </div>
+          ) : (
+            <div className="aspect-video bg-surface-950 border-2 border-dashed border-surface-600/50 flex flex-col items-center justify-center rounded-sm">
+              <ScanLine className="h-12 w-12 text-surface-600 mb-4" />
+              <button 
+                onClick={() => setCameraActive(true)}
+                className="bg-surface-800 border border-surface-600 text-surface-200 px-6 py-3 text-xs uppercase tracking-widest font-semibold hover:bg-surface-700 transition-colors flex items-center gap-2 rounded-sm"
+              >
+                <Camera className="h-4 w-4" /> Aktifkan Kamera Scanner
+              </button>
+            </div>
+          )}
         </div>
 
-        <form onSubmit={handleScan} className="flex gap-4">
+        <form onSubmit={handleScanForm} className="flex gap-4">
           <input
             type="text"
             value={token}

@@ -1,0 +1,50 @@
+.custom-calendar-wrapper .rbc-calendar {
+  color: #fff;
+  font-family: inherit;
+}
+
+.custom-calendar-wrapper .rbc-month-view,
+.custom-calendar-wrapper .rbc-time-view,
+.custom-calendar-wrapper .rbc-agenda-view {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.custom-calendar-wrapper .rbc-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  padding: 8px 0;
+  font-weight: 500;
+  color: #999;
+}
+
+.custom-calendar-wrapper .rbc-month-row,
+.custom-calendar-wrapper .rbc-day-bg {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.custom-calendar-wrapper .rbc-off-range-bg {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.custom-calendar-wrapper .rbc-today {
+  background-color: rgba(212, 175, 55, 0.05); /* very subtle gold */
+}
+
+.custom-calendar-wrapper .rbc-btn-group button {
+  color: #ccc;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: transparent;
+}
+
+.custom-calendar-wrapper .rbc-btn-group button.rbc-active {
+  background-color: rgba(212, 175, 55, 0.2);
+  color: #d4af37;
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.custom-calendar-wrapper .rbc-btn-group button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.custom-calendar-wrapper .rbc-toolbar {
+  margin-bottom: 20px;
+}
