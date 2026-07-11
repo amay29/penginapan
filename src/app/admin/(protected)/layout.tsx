@@ -23,6 +23,21 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session?.user) redirect("/admin/login");
 
   const initial = session.user.name?.charAt(0).toUpperCase() || "A";
+  const role = session.user.role || "USER";
+
+  // Filter navigation based on role
+  const filteredNavItems = navItems.filter((item) => {
+    if (role === "OWNER") return true;
+    if (role === "RECEPTIONIST") return item.href === "/admin/bookings" || item.href === "/admin/units";
+    if (role === "POOL_SECURITY") return item.href === "/admin/validasi-tiket" || item.href === "/admin/pool";
+    return false;
+  });
+
+  const filteredCafeItems = cafeNavItems.filter((item) => {
+    if (role === "OWNER") return true;
+    if (role === "CAFE_CASHIER") return true; // cashier sees all cafe menus
+    return false;
+  });
 
   return (
     <div className="flex min-h-screen bg-surface-950 text-surface-100 font-sans antialiased">
@@ -42,29 +57,37 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-6 space-y-0.5">
-          <p className="px-3 mb-3 text-[9px] uppercase tracking-[0.3em] text-surface-500">Management</p>
-          {navItems.map(({ href, icon: Icon, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-400 rounded-sm hover:text-surface-100 hover:bg-surface-700/50 transition-all duration-200"
-            >
-              <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-              <span className="tracking-wide">{label}</span>
-            </Link>
-          ))}
+          {filteredNavItems.length > 0 && (
+            <>
+              <p className="px-3 mb-3 text-[9px] uppercase tracking-[0.3em] text-surface-500">Management</p>
+              {filteredNavItems.map(({ href, icon: Icon, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-400 rounded-sm hover:text-surface-100 hover:bg-surface-700/50 transition-all duration-200"
+                >
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                  <span className="tracking-wide">{label}</span>
+                </Link>
+              ))}
+            </>
+          )}
           
-          <p className="px-3 mb-3 mt-6 text-[9px] uppercase tracking-[0.3em] text-surface-500">Rosa Cafe</p>
-          {cafeNavItems.map(({ href, icon: Icon, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-400 rounded-sm hover:text-surface-100 hover:bg-surface-700/50 transition-all duration-200"
-            >
-              <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-              <span className="tracking-wide">{label}</span>
-            </Link>
-          ))}
+          {filteredCafeItems.length > 0 && (
+            <>
+              <p className="px-3 mb-3 mt-6 text-[9px] uppercase tracking-[0.3em] text-surface-500">Rosa Cafe</p>
+              {filteredCafeItems.map(({ href, icon: Icon, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-400 rounded-sm hover:text-surface-100 hover:bg-surface-700/50 transition-all duration-200"
+                >
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                  <span className="tracking-wide">{label}</span>
+                </Link>
+              ))}
+            </>
+          )}
         </nav>
 
         {/* User & Signout */}
@@ -75,7 +98,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </div>
             <div className="min-w-0">
               <p className="text-sm text-surface-100 truncate">{session.user.name}</p>
-              <p className="text-[9px] uppercase tracking-widest text-surface-500">Administrator</p>
+              <p className="text-[9px] uppercase tracking-widest text-surface-500">{role.replace('_', ' ')}</p>
             </div>
           </div>
           <Link

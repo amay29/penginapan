@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from "@prisma/adapter-pg"
 import pg from "pg"
 import "dotenv/config"
+import bcrypt from "bcryptjs"
 
 const connectionString = process.env.DATABASE_URL
 const pool = new pg.Pool({ connectionString })
@@ -57,6 +58,26 @@ async function main() {
   }
 
   console.log('Seeding completed! Created 3 glamping units.')
+
+  console.log('Seeding role accounts...')
+  const passwordHash = await bcrypt.hash('password', 10)
+  
+  const users = [
+    { name: 'Owner', email: 'owner@rosaglamping.com', role: 'OWNER', passwordHash },
+    { name: 'Resepsionis', email: 'receptionist@rosaglamping.com', role: 'RECEPTIONIST', passwordHash },
+    { name: 'Kasir Kafe', email: 'cafe@rosaglamping.com', role: 'CAFE_CASHIER', passwordHash },
+    { name: 'Satpam Kolam', email: 'pool@rosaglamping.com', role: 'POOL_SECURITY', passwordHash },
+  ]
+
+  for (const user of users) {
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: { role: user.role, passwordHash },
+      create: user,
+    })
+  }
+
+  console.log('Role accounts seeded successfully.')
 }
 
 main()

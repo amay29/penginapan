@@ -1,8 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { ArrowRight, TrendingUp, CalendarCheck, Home, Clock } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function AdminDashboardPage() {
+  const session = await getServerSession(authOptions);
+  const role = session?.user?.role || "USER";
+
+  if (role === "RECEPTIONIST") redirect("/admin/bookings");
+  if (role === "CAFE_CASHIER") redirect("/admin/cafe/pos");
+  if (role === "POOL_SECURITY") redirect("/admin/validasi-tiket");
   const [totalBookings, confirmedBookings, pendingBookings, totalUnits, totalRevenueData, recentBookings] = await Promise.all([
     prisma.booking.count(),
     prisma.booking.count({ where: { status: "CONFIRMED" } }),
