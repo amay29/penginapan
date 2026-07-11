@@ -29,7 +29,7 @@ export default function PublicLayout({
             : "bg-transparent"
         }`}
       >
-        <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 md:px-12">
+        <div className="mx-auto flex h-20 max-w-350 items-center justify-between px-6 md:px-12">
           {/* Left nav */}
           <nav className="hidden flex-1 items-center gap-10 md:flex">
             <Link

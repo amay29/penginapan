@@ -12,7 +12,7 @@ async function UnitCollection() {
 
   return (
     <section id="accommodations" className="py-24 px-6 md:px-12">
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-350">
         <div className="mb-20 grid grid-cols-2 items-end md:grid-cols-3">
           <div>
             <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-obsidian-500">
