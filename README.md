@@ -1,58 +1,98 @@
-# Damar Retreats
+# Damar Retreats Reservation System
 
-A boutique glamping and cabin reservation system, built to feel premium, natural, and effortless.
+A premium, full-stack Progressive Web Application (PWA) designed to elevate the boutique hospitality and glamping experience. Built specifically for **Damar Retreats**, this platform seamlessly integrates an immersive storefront, a smart booking engine, a real-time AI Concierge, and a comprehensive administrative dashboard into a single, cohesive system.
 
-This project is a full-stack Next.js web application designed specifically for boutique hospitality. It includes an immersive public-facing storefront for guests to explore units, an AI-powered concierge for instant answers, and a secure admin dashboard to manage everything behind the scenes.
+---
 
-## Features
+## 🌟 Key Features
 
-- **Immersive Storefront**: Minimalist, premium UI tailored for boutique hotels and nature retreats.
-- **Smart Booking Flow**: Seamless multi-step reservation process with real-time calendar availability.
-- **AI Virtual Concierge**: Integrated Google Gemini AI that knows your live property data and checks availability instantly.
-- **Admin CMS**: Dashboard to manage spaces, adjust pricing, and track guest bookings.
-- **Automated Emails**: Booking confirmations and admin notifications handled via Resend.
+### 🏕️ Immersive Storefront & Booking Flow
+* **Premium Aesthetics:** A minimalist, nature-inspired UI crafted specifically for boutique hotels and exclusive retreats.
+* **Smart Booking Engine:** Multi-step reservation process with real-time calendar availability checking and automated price calculations.
+* **Responsive Design:** Flawless experience across desktop, tablet, and mobile devices.
 
-## Tech Stack
+### 🤖 AI Virtual Concierge (Gemini-Powered)
+* **Real-Time Data Access:** The AI is dynamically connected to the CMS. If prices or amenities are updated in the admin panel, the AI knows instantly.
+* **Live Availability Checking:** Powered by advanced Function Calling. Guests can ask *"Is the A-Frame Cabin available on August 15th?"* and the AI will check the database in real-time to provide accurate answers.
+* **Context-Aware Assistance:** Understands property rules, handles FAQ, and gracefully redirects complex inquiries to human staff via WhatsApp.
 
-- **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Database**: PostgreSQL with [Prisma ORM](https://www.prisma.io/)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
-- **AI Integration**: Vercel AI SDK + Google Gemini
-- **Styling**: Tailwind CSS + Lucide Icons
-- **Mailing**: Resend
+### 💼 Comprehensive Admin CMS
+* **Space Management:** Create, edit, and delete glamping units. Update pricing, capacities, and amenities without touching code.
+* **Booking Dashboard:** Track all incoming reservations, view guest details, and manage booking statuses (Pending, Confirmed, Cancelled).
+* **AI Copywriting Assistant:** Built-in generative AI tool in the CMS to automatically craft poetic, compelling promotional copy for newly added spaces.
 
-## Getting Started
+### 📧 Automated Email Notifications
+* **Guest Confirmations:** Automatically sends beautiful HTML booking confirmations to guests upon reservation.
+* **Admin Alerts:** Instantly notifies the property management team whenever a new booking is created.
 
-1. Clone the repository:
+---
+
+## 🛠️ Tech Stack
+
+* **Frontend Framework:** [Next.js](https://nextjs.org/) (App Router, React Server/Client Components)
+* **Styling:** Vanilla CSS (Tailored token system, premium dark/glassmorphic aesthetics)
+* **Database & ORM:** [PostgreSQL](https://www.postgresql.org/) with [Prisma ORM](https://www.prisma.io/)
+* **Authentication:** [NextAuth.js](https://next-auth.js.org/) (Secure Admin login)
+* **AI Integration:** [Vercel AI SDK](https://sdk.vercel.ai/) & Google Gemini (1.5 Flash)
+* **Mailing:** [Resend](https://resend.com/)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+* Node.js (v18 or higher)
+* PostgreSQL Database
+
+### Installation & Setup
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/amay29/penginapan.git
+   cd penginapan
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. Setup environment variables (create a `.env` file):
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root directory and define the following variables:
    ```env
-   DATABASE_URL="your-postgresql-url"
-   NEXTAUTH_SECRET="your-secret"
+   # Database connection
+   DATABASE_URL="postgresql://user:password@localhost:5432/damar"
+
+   # NextAuth Setup
+   NEXTAUTH_SECRET="generate-a-secure-random-string"
    NEXTAUTH_URL="http://localhost:3000"
-   GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-key"
-   RESEND_API_KEY="your-resend-key"
+
+   # External APIs
+   GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key"
+   RESEND_API_KEY="your-resend-api-key"
    ```
 
-4. Push the database schema:
+4. **Run Prisma Migrations & Generate Client:**
    ```bash
    npx prisma db push
+   npx prisma generate
    ```
 
-5. Run the development server:
+5. **Start the Development Server:**
    ```bash
    npm run dev
    ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser. To access the Admin Panel, navigate to `/admin/login`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. To access the CMS, navigate to `/admin`.
+### Building for Production
 
-## License
-MIT
+To create an optimized production build:
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 📝 License
+This project is open-source and available under the [MIT License](LICENSE).
