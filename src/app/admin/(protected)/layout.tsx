@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, LogOut, Grid2X2, CalendarDays, ExternalLink, Ticket, ScanLine } from "lucide-react";
+import { LayoutDashboard, LogOut, Grid2X2, CalendarDays, ExternalLink, Ticket, ScanLine, Coffee, Utensils, ReceiptText } from "lucide-react";
 
 const navItems = [
   { href: "/admin",          icon: LayoutDashboard, label: "Overview"  },
@@ -10,6 +10,12 @@ const navItems = [
   { href: "/admin/units",    icon: Grid2X2,         label: "Spaces"    },
   { href: "/admin/pool",     icon: Ticket,          label: "Pool Tickets"},
   { href: "/admin/validasi-tiket", icon: ScanLine,  label: "Scan Tiket"  },
+];
+
+const cafeNavItems = [
+  { href: "/admin/cafe/pos",    icon: Coffee,      label: "Kasir POS"   },
+  { href: "/admin/cafe/menu",   icon: Utensils,    label: "Manajemen Menu"},
+  { href: "/admin/cafe/orders", icon: ReceiptText, label: "Riwayat Kafe" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -38,6 +44,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <nav className="flex-1 px-3 py-6 space-y-0.5">
           <p className="px-3 mb-3 text-[9px] uppercase tracking-[0.3em] text-surface-500">Management</p>
           {navItems.map(({ href, icon: Icon, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-400 rounded-sm hover:text-surface-100 hover:bg-surface-700/50 transition-all duration-200"
+            >
+              <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+              <span className="tracking-wide">{label}</span>
+            </Link>
+          ))}
+          
+          <p className="px-3 mb-3 mt-6 text-[9px] uppercase tracking-[0.3em] text-surface-500">Rosa Cafe</p>
+          {cafeNavItems.map(({ href, icon: Icon, label }) => (
             <Link
               key={href}
               href={href}

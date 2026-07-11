@@ -44,6 +44,8 @@ model Booking {
   //   "unitId" WITH =,
   //   daterange("checkIn", "checkOut") WITH &&
   // ) WHERE (status != 'CANCELLED')
+
+  cafeOrders   CafeOrder[]
 }
 
 // -----------------------------------------------------------------------------
@@ -120,4 +122,52 @@ model PoolTicket {
   qrCode      String   @unique // Unique token for the QR code
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// Rosa Cafe POS Models
+// -----------------------------------------------------------------------------
+
+model CafeItem {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   // e.g., "Makanan", "Snack", "Minuman"
+  price       Float
+  isAvailable Boolean  @default(true)
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems  CafeOrderItem[]
+}
+
+model CafeOrder {
+  id            String   @id @default(cuid())
+  bookingId     String?  // Optional: linked to a booking if charged to room
+  booking       Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  
+  guestName     String?  // For walk-in customers
+  tableNumber   String?
+  
+  totalAmount   Float
+  paymentMethod String   // "CASH", "QRIS", "ROOM_CHARGE"
+  status        String   @default("COMPLETED") // PENDING, COMPLETED, CANCELLED
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         CafeOrderItem[]
+}
+
+model CafeOrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       CafeOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  itemId      String
+  item        CafeItem @relation(fields: [itemId], references: [id])
+  
+  quantity    Int
+  priceAtTime Float    // Store price at the time of order
+  subtotal    Float
 }
