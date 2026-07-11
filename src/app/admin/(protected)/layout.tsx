@@ -2,12 +2,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, LogOut, Grid2X2, CalendarDays, ExternalLink } from "lucide-react";
+import { LayoutDashboard, LogOut, Grid2X2, CalendarDays, ExternalLink, Ticket, ScanLine } from "lucide-react";
 
 const navItems = [
   { href: "/admin",          icon: LayoutDashboard, label: "Overview"  },
   { href: "/admin/bookings", icon: CalendarDays,    label: "Bookings"  },
   { href: "/admin/units",    icon: Grid2X2,         label: "Spaces"    },
+  { href: "/admin/pool",     icon: Ticket,          label: "Pool Tickets"},
+  { href: "/admin/validasi-tiket", icon: ScanLine,  label: "Scan Tiket"  },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

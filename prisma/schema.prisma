@@ -102,3 +102,22 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+
+// -----------------------------------------------------------------------------
+// Rosa Swimming Pool Management Models
+// -----------------------------------------------------------------------------
+
+model PoolTicket {
+  id          String   @id @default(cuid())
+  guestName   String
+  guestEmail  String
+  guestPhone  String
+  visitDate   DateTime @db.Date
+  adultCount  Int      @default(1)
+  childCount  Int      @default(0)
+  totalPrice  Float
+  status      String   @default("PENDING") // PENDING, PAID, USED, EXPIRED
+  qrCode      String   @unique // Unique token for the QR code
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
