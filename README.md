@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Damar Retreats
+
+A boutique glamping and cabin reservation system, built to feel premium, natural, and effortless.
+
+This project is a full-stack Next.js web application designed specifically for boutique hospitality. It includes an immersive public-facing storefront for guests to explore units, an AI-powered concierge for instant answers, and a secure admin dashboard to manage everything behind the scenes.
+
+## Features
+
+- **Immersive Storefront**: Minimalist, premium UI tailored for boutique hotels and nature retreats.
+- **Smart Booking Flow**: Seamless multi-step reservation process with real-time calendar availability.
+- **AI Virtual Concierge**: Integrated Google Gemini AI that knows your live property data and checks availability instantly.
+- **Admin CMS**: Dashboard to manage spaces, adjust pricing, and track guest bookings.
+- **Automated Emails**: Booking confirmations and admin notifications handled via Resend.
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Database**: PostgreSQL with [Prisma ORM](https://www.prisma.io/)
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **AI Integration**: Vercel AI SDK + Google Gemini
+- **Styling**: Tailwind CSS + Lucide Icons
+- **Mailing**: Resend
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/amay29/penginapan.git
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Setup environment variables (create a `.env` file):
+   ```env
+   DATABASE_URL="your-postgresql-url"
+   NEXTAUTH_SECRET="your-secret"
+   NEXTAUTH_URL="http://localhost:3000"
+   GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-key"
+   RESEND_API_KEY="your-resend-key"
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Push the database schema:
+   ```bash
+   npx prisma db push
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. To access the CMS, navigate to `/admin`.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+MIT
