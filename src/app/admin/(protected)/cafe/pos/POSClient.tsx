@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { processCafeOrder } from "@/actions/cafe";
-import { Coffee, Minus, Plus, ShoppingCart, Trash2, User, Loader2, ArrowRight } from "lucide-react";
+import { Coffee, Minus, Plus, ShoppingCart, Trash2, User, Loader2, ArrowRight, Sun, Moon } from "lucide-react";
 
 interface MenuItem {
   id: string;
@@ -29,6 +29,20 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
   
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  const t = {
+    bg: isLightMode ? "bg-surface-100 text-surface-950" : "",
+    panel: isLightMode ? "bg-white border-surface-200" : "bg-surface-900 border-surface-600/30",
+    item: isLightMode ? "bg-white border-surface-200 hover:border-gold-500 hover:bg-surface-50" : "bg-surface-900 border-surface-600/30 hover:border-gold-500/50 hover:bg-surface-800",
+    textHeader: isLightMode ? "text-surface-950" : "text-surface-50",
+    textMuted: isLightMode ? "text-surface-500" : "text-surface-400",
+    cartItemBg: isLightMode ? "bg-white border-surface-200" : "bg-surface-950 border-surface-600/20",
+    input: isLightMode ? "bg-white border-surface-300 text-surface-950" : "bg-surface-900 border-surface-600/50 text-surface-100",
+    divider: isLightMode ? "border-surface-200" : "border-surface-600/30",
+    cartHeader: isLightMode ? "bg-surface-50" : "bg-surface-950",
+  };
 
   const addToCart = (item: MenuItem) => {
     setCart(prev => {
@@ -83,18 +97,27 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)] gap-6 -m-6 p-6">
+    <div className={`flex flex-col lg:flex-row h-[calc(100vh-80px)] gap-6 -m-6 p-6 transition-colors duration-300 ${t.bg}`}>
       
       {/* Left: Menu Items */}
       <div className="flex-1 flex flex-col min-h-0 overflow-y-auto pr-2">
-        <h1 className="font-serif text-3xl font-light tracking-wide text-surface-50 mb-6 flex items-center gap-3">
-          <Coffee className="h-6 w-6 text-gold-400" />
-          Rosa Cafe POS
-        </h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className={`font-serif text-3xl font-light tracking-wide flex items-center gap-3 ${t.textHeader}`}>
+            <Coffee className="h-6 w-6 text-gold-500" />
+            Rosa Cafe POS
+          </h1>
+          <button 
+            onClick={() => setIsLightMode(!isLightMode)}
+            className={`p-2 rounded-full border transition-colors ${isLightMode ? 'border-surface-300 bg-white hover:bg-surface-100 text-surface-600' : 'border-surface-600/50 bg-surface-800 hover:bg-surface-700 text-surface-400'}`}
+            title="Toggle Light/Dark Mode"
+          >
+            {isLightMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          </button>
+        </div>
 
         {categories.map(category => (
           <div key={category} className="mb-8">
-            <h2 className="text-xs uppercase tracking-widest text-surface-500 mb-4 pb-2 border-b border-surface-600/30">
+            <h2 className={`text-xs uppercase tracking-widest mb-4 pb-2 border-b ${t.textMuted} ${t.divider}`}>
               {category}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -102,12 +125,12 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
                 <button
                   key={item.id}
                   onClick={() => addToCart(item)}
-                  className="bg-surface-900 border border-surface-600/30 p-4 text-left hover:border-gold-500/50 hover:bg-surface-800 transition-colors group flex flex-col justify-between aspect-square"
+                  className={`${t.item} border p-4 text-left transition-colors group flex flex-col justify-between aspect-square rounded-sm`}
                 >
-                  <span className="text-surface-100 font-medium group-hover:text-gold-400 transition-colors line-clamp-2">
+                  <span className={`${isLightMode ? 'text-surface-900' : 'text-surface-100'} font-medium group-hover:text-gold-500 transition-colors line-clamp-2`}>
                     {item.name}
                   </span>
-                  <span className="text-surface-400 font-mono text-sm mt-4">
+                  <span className={`${t.textMuted} font-mono text-sm mt-4`}>
                     Rp {item.price.toLocaleString("id-ID")}
                   </span>
                 </button>
@@ -118,32 +141,32 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
       </div>
 
       {/* Right: Cart & Checkout */}
-      <div className="w-full lg:w-96 flex flex-col bg-surface-900 border border-surface-600/30 shrink-0 h-full overflow-hidden">
-        <div className="p-5 border-b border-surface-600/30 flex items-center justify-between bg-surface-950">
-          <h2 className="font-serif text-xl text-surface-50 flex items-center gap-2">
-            <ShoppingCart className="h-5 w-5 text-gold-400" /> Current Order
+      <div className={`w-full lg:w-96 flex flex-col border shrink-0 h-full overflow-hidden rounded-sm transition-colors ${t.panel}`}>
+        <div className={`p-5 border-b flex items-center justify-between transition-colors ${t.divider} ${t.cartHeader}`}>
+          <h2 className={`font-serif text-xl flex items-center gap-2 ${t.textHeader}`}>
+            <ShoppingCart className="h-5 w-5 text-gold-500" /> Current Order
           </h2>
-          <span className="text-xs text-surface-500">{cart.length} items</span>
+          <span className={`text-xs ${t.textMuted}`}>{cart.length} items</span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {cart.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-surface-500 text-sm">
+            <div className={`h-full flex flex-col items-center justify-center text-sm ${t.textMuted}`}>
               <ShoppingCart className="h-12 w-12 mb-3 opacity-20" />
               <p>Keranjang kosong</p>
             </div>
           ) : (
             cart.map(item => (
-              <div key={item.id} className="flex items-center justify-between bg-surface-950 p-3 border border-surface-600/20">
+              <div key={item.id} className={`flex items-center justify-between p-3 border rounded-sm transition-colors ${t.cartItemBg}`}>
                 <div className="flex-1 min-w-0 pr-4">
-                  <p className="text-surface-100 text-sm truncate font-medium">{item.name}</p>
-                  <p className="text-surface-500 font-mono text-xs mt-1">Rp {(item.price * item.quantity).toLocaleString("id-ID")}</p>
+                  <p className={`text-sm truncate font-medium ${isLightMode ? 'text-surface-900' : 'text-surface-100'}`}>{item.name}</p>
+                  <p className={`font-mono text-xs mt-1 ${t.textMuted}`}>Rp {(item.price * item.quantity).toLocaleString("id-ID")}</p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <div className="flex items-center border border-surface-600/50 rounded-sm">
-                    <button onClick={() => updateQuantity(item.id, -1)} className="px-2 py-1 text-surface-400 hover:text-surface-100 hover:bg-surface-800"><Minus className="h-3 w-3" /></button>
-                    <span className="px-2 font-mono text-xs text-surface-100">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, 1)} className="px-2 py-1 text-surface-400 hover:text-surface-100 hover:bg-surface-800"><Plus className="h-3 w-3" /></button>
+                  <div className={`flex items-center border rounded-sm ${isLightMode ? 'border-surface-200' : 'border-surface-600/50'}`}>
+                    <button onClick={() => updateQuantity(item.id, -1)} className={`px-2 py-1 ${t.textMuted} hover:text-gold-500`}><Minus className="h-3 w-3" /></button>
+                    <span className={`px-2 font-mono text-xs ${isLightMode ? 'text-surface-900' : 'text-surface-100'}`}>{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, 1)} className={`px-2 py-1 ${t.textMuted} hover:text-gold-500`}><Plus className="h-3 w-3" /></button>
                   </div>
                   <button onClick={() => removeFromCart(item.id)} className="text-surface-500 hover:text-red-400 p-1"><Trash2 className="h-4 w-4" /></button>
                 </div>
@@ -152,15 +175,15 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
           )}
         </div>
 
-        <div className="p-5 border-t border-surface-600/30 bg-surface-950 space-y-5">
+        <div className={`p-5 border-t space-y-5 transition-colors ${t.divider} ${t.cartHeader}`}>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-surface-400 mb-2">Metode Pembayaran</label>
+              <label className={`block text-[10px] uppercase tracking-widest mb-2 ${t.textMuted}`}>Metode Pembayaran</label>
               <select 
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full bg-surface-900 border border-surface-600/50 text-surface-100 px-3 py-2 text-sm focus:outline-none focus:border-gold-500 transition-colors appearance-none"
+                className={`w-full border px-3 py-2 text-sm focus:outline-none focus:border-gold-500 transition-colors appearance-none rounded-sm ${t.input}`}
               >
                 <option value="CASH">Tunai (Cash)</option>
                 <option value="QRIS">QRIS / Transfer</option>
@@ -170,11 +193,11 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
 
             {paymentMethod === "ROOM_CHARGE" ? (
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-surface-400 mb-2">Pilih Kamar / Tamu</label>
+                <label className={`block text-[10px] uppercase tracking-widest mb-2 ${t.textMuted}`}>Pilih Kamar / Tamu</label>
                 <select 
                   value={selectedBookingId}
                   onChange={(e) => setSelectedBookingId(e.target.value)}
-                  className="w-full bg-surface-900 border border-surface-600/50 text-surface-100 px-3 py-2 text-sm focus:outline-none focus:border-gold-500 transition-colors appearance-none"
+                  className={`w-full border px-3 py-2 text-sm focus:outline-none focus:border-gold-500 transition-colors appearance-none rounded-sm ${t.input}`}
                 >
                   <option value="">-- Pilih Tamu --</option>
                   {activeBookings.map(b => (
@@ -184,7 +207,7 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
               </div>
             ) : (
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-surface-400 mb-2 flex items-center gap-1">
+                <label className={`block text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1 ${t.textMuted}`}>
                   <User className="h-3 w-3" /> Nama Pemesan (Opsional)
                 </label>
                 <input 
@@ -192,16 +215,16 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
                   value={guestName}
                   onChange={(e) => setGuestName(e.target.value)}
                   placeholder="Mis. Meja 4 / Walk-in"
-                  className="w-full bg-surface-900 border border-surface-600/50 text-surface-100 px-3 py-2 text-sm focus:outline-none focus:border-gold-500 transition-colors placeholder:text-surface-600"
+                  className={`w-full border px-3 py-2 text-sm focus:outline-none focus:border-gold-500 transition-colors rounded-sm ${t.input} ${isLightMode ? 'placeholder:text-surface-400' : 'placeholder:text-surface-600'}`}
                 />
               </div>
             )}
           </div>
 
-          <div className="pt-4 border-t border-surface-600/30 flex items-end justify-between">
+          <div className={`pt-4 border-t flex items-end justify-between ${t.divider}`}>
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-surface-500 mb-1">Total</p>
-              <p className="font-serif text-2xl text-gold-400">Rp {totalAmount.toLocaleString("id-ID")}</p>
+              <p className={`text-[10px] uppercase tracking-widest mb-1 ${t.textMuted}`}>Total</p>
+              <p className="font-serif text-2xl text-gold-500">Rp {totalAmount.toLocaleString("id-ID")}</p>
             </div>
           </div>
 
