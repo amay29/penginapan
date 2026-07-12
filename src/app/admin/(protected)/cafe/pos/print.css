@@ -1,0 +1,26 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receipt-print, #receipt-print * {
+    visibility: visible;
+  }
+  #receipt-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px; /* Thermal printer width approx */
+    margin: 0;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 12px;
+    color: black;
+    background: white;
+  }
+
+  /* Force background colors to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

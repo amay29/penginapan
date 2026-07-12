@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { processCafeOrder } from "@/actions/cafe";
-import { Coffee, Minus, Plus, ShoppingCart, Trash2, User, Loader2, ArrowRight, Sun, Moon } from "lucide-react";
+import { Coffee, Minus, Plus, ShoppingCart, Trash2, User, Loader2, ArrowRight, Sun, Moon, Printer } from "lucide-react";
+import "./print.css";
 
 interface MenuItem {
   id: string;
@@ -30,6 +31,15 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   
+  // State to hold the last completed order for printing
+  const [lastOrder, setLastOrder] = useState<{
+    items: CartItem[];
+    total: number;
+    paymentMethod: string;
+    guestName: string;
+    date: Date;
+  } | null>(null);
+
   const [isLightMode, setIsLightMode] = useState(false);
 
   const t = {
@@ -88,16 +98,27 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
     
     if (res.success) {
       setSuccessMsg("Pesanan berhasil diproses!");
+      
+      // Save order for receipt printing
+      setLastOrder({
+        items: [...cart],
+        total: totalAmount,
+        paymentMethod,
+        guestName: guestName || (paymentMethod === "ROOM_CHARGE" ? "Room Charge" : "Walk-in"),
+        date: new Date()
+      });
+
       setCart([]);
       setGuestName("");
-      setTimeout(() => setSuccessMsg(""), 3000);
+      setTimeout(() => setSuccessMsg(""), 5000);
     } else {
       alert(res.error);
     }
   };
 
   return (
-    <div className={`flex flex-col lg:flex-row h-[calc(100vh-80px)] gap-6 -m-6 p-6 transition-colors duration-300 ${t.bg}`}>
+    <>
+      <div className={`flex flex-col lg:flex-row h-[calc(100vh-80px)] gap-6 -m-6 p-6 transition-colors duration-300 ${t.bg}`}>
       
       {/* Left: Menu Items */}
       <div className="flex-1 flex flex-col min-h-0 overflow-y-auto pr-2">
@@ -229,15 +250,23 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
           </div>
 
           {successMsg && (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs px-3 py-2 text-center">
-              {successMsg}
+            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs px-3 py-3 text-center rounded-sm flex flex-col gap-2">
+              <p>{successMsg}</p>
+              {lastOrder && (
+                <button 
+                  onClick={() => window.print()}
+                  className="bg-emerald-600 text-white py-2 rounded-sm hover:bg-emerald-500 flex items-center justify-center gap-2 font-medium"
+                >
+                  <Printer className="h-4 w-4" /> Cetak Struk
+                </button>
+              )}
             </div>
           )}
 
           <button
             onClick={handleCheckout}
             disabled={cart.length === 0 || loading || (paymentMethod === "ROOM_CHARGE" && !selectedBookingId)}
-            className="w-full bg-gold-500 text-surface-950 py-3 text-xs uppercase tracking-widest font-semibold hover:bg-gold-400 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
+            className="w-full bg-gold-500 text-surface-950 py-3 text-xs uppercase tracking-widest font-semibold hover:bg-gold-400 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors rounded-sm"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
               <>
@@ -249,5 +278,42 @@ export default function POSClient({ menuItems, activeBookings }: { menuItems: Me
         </div>
       </div>
     </div>
+
+    {/* Hidden Receipt Element for Printing */}
+    {lastOrder && (
+      <div id="receipt-print" className="hidden">
+        <div className="text-center mb-4 border-b border-dashed border-black pb-4">
+          <h2 className="text-xl font-bold m-0">Rosa Cafe</h2>
+          <p className="text-xs m-0 mt-1">Glamping & Pool</p>
+          <p className="text-xs m-0 mt-1">{lastOrder.date.toLocaleString("id-ID")}</p>
+        </div>
+        
+        <div className="mb-2">
+          <p className="text-xs m-0">Tamu: {lastOrder.guestName}</p>
+          <p className="text-xs m-0">Bayar: {lastOrder.paymentMethod}</p>
+        </div>
+
+        <table className="w-full text-xs mt-4 mb-4 border-b border-dashed border-black pb-4">
+          <tbody>
+            {lastOrder.items.map((item, idx) => (
+              <tr key={idx}>
+                <td className="py-1">{item.name} <br/> {item.quantity}x @ {item.price.toLocaleString("id-ID")}</td>
+                <td className="py-1 text-right align-bottom">{(item.price * item.quantity).toLocaleString("id-ID")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="flex justify-between font-bold text-sm">
+          <span>TOTAL:</span>
+          <span>Rp {lastOrder.total.toLocaleString("id-ID")}</span>
+        </div>
+
+        <div className="text-center mt-6 pt-4 border-t border-dashed border-black">
+          <p className="text-xs">Terima kasih atas kunjungan Anda!</p>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
