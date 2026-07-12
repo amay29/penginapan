@@ -14,40 +14,40 @@ async function main() {
 
   const units = [
     {
-      name: 'Pines A-Frame Cabin',
-      type: 'A-Frame',
+      name: 'Kabin Kaca Edelweiss',
+      type: 'Kabin',
       capacity: 4,
       pricePerNight: 1250000,
-      amenities: ['Queen Bed', 'Private Bathroom', 'Kitchenette', 'Fire Pit', 'WiFi', 'Mountain View'],
+      amenities: ['Queen Bed', 'Kamar Mandi Dalam', 'Dapur Kecil', 'Area Api Unggun', 'WiFi Gratis', 'Pemandangan Gunung'],
       photoUrls: [
-        'https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80'
+        'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80'
       ],
-      promotionalCopy: 'Escape to the whispering pines in our signature A-Frame cabin. Perfect for couples or small families seeking a serene mountain retreat.'
+      promotionalCopy: 'Nikmati suasana tenang dan udara sejuk khas pegunungan Ciparay dari dalam kabin kaca eksklusif kami. Cocok untuk liburan keluarga atau *staycation* pasangan.'
     },
     {
-      name: 'Riverside Safari Tent',
-      type: 'Tent',
+      name: 'Tenda Safari Pinus',
+      type: 'Tenda Glamping',
       capacity: 2,
       pricePerNight: 850000,
-      amenities: ['King Bed', 'Shared Bathroom', 'Outdoor Deck', 'BBQ Grill', 'River View'],
+      amenities: ['King Bed', 'Kamar Mandi Terpisah', 'Teras Kayu', 'BBQ Grill', 'Pemandangan Hutan Pinus'],
       photoUrls: [
-        'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1534880606858-29b0e8a24e8d?auto=format&fit=crop&q=80'
+        'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1504280387367-361c6d9e38f4?auto=format&fit=crop&q=80'
       ],
-      promotionalCopy: 'Experience the thrill of the wild with the comforts of home. Fall asleep to the sound of the rushing river.'
+      promotionalCopy: 'Rasakan sensasi berkemah mewah menyatu dengan alam tanpa harus repot. Tidur nyenyak dengan kasur yang empuk ditemani suara alam Ciparay.'
     },
     {
-      name: 'The Glass House',
-      type: 'Cabin',
+      name: 'Vila Bukit Rosa',
+      type: 'Vila',
       capacity: 2,
       pricePerNight: 1800000,
-      amenities: ['King Bed', 'Ensuite Bathroom', 'Stargazing Ceiling', 'Private Jacuzzi', 'Air Conditioning', 'WiFi'],
+      amenities: ['King Bed', 'Kamar Mandi Dalam', 'Atap Kaca Bintang', 'Jacuzzi Pribadi', 'AC', 'WiFi Gratis'],
       photoUrls: [
-        'https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80'
+        'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80'
       ],
-      promotionalCopy: 'Immerse yourself in nature without boundaries. The Glass House offers an unparalleled romantic stargazing experience.'
+      promotionalCopy: 'Manjakan diri Anda di vila premium dengan fasilitas lengkap. Berendam di kolam jacuzzi pribadi sambil menatap langit malam bertabur bintang.'
     }
   ]
 

@@ -3,9 +3,14 @@
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function createUser(data: { name: string; email: string; role: string; password?: string }) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as any).role !== "OWNER") throw new Error("Unauthorized");
+
     const existing = await prisma.user.findUnique({ where: { email: data.email } });
     if (existing) throw new Error("Email sudah digunakan");
 
@@ -30,6 +35,9 @@ export async function createUser(data: { name: string; email: string; role: stri
 
 export async function deleteUser(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as any).role !== "OWNER") throw new Error("Unauthorized");
+
     const user = await prisma.user.findUnique({ where: { id } });
     if (user?.role === "OWNER") throw new Error("Tidak bisa menghapus akun OWNER");
 

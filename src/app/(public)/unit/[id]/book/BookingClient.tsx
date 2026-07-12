@@ -98,8 +98,8 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
 
       {/* ── Left: Calendar ──────────────────────────────────────── */}
       <div>
-        <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Step 01</p>
-        <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Select Dates</h2>
+        <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Langkah 01</p>
+        <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Pilih Tanggal</h2>
 
         <Calendar
           mode="range"
@@ -136,8 +136,8 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
 
       {/* ── Right: Form ─────────────────────────────────────────── */}
       <div>
-        <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Step 02</p>
-        <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Your Details</h2>
+        <p className="mb-2 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Langkah 02</p>
+        <h2 className="font-serif text-4xl font-light text-obsidian-900 mb-10">Data Diri</h2>
 
         <form onSubmit={handleSubmit} className="space-y-10">
           {error && (
@@ -147,14 +147,14 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
           )}
 
           <div>
-            <label htmlFor="name" className={labelClass}>Full Name</label>
+            <label htmlFor="name" className={labelClass}>Nama Lengkap</label>
             <input id="name" required type="text" value={name}
               onChange={e => setName(e.target.value)}
               className={inputClass} placeholder="Nama lengkap Anda" />
           </div>
 
           <div>
-            <label htmlFor="email" className={labelClass}>Email Address</label>
+            <label htmlFor="email" className={labelClass}>Alamat Email</label>
             <input id="email" required type="email" value={email}
               onChange={e => setEmail(e.target.value)}
               className={inputClass} placeholder="email@anda.com" />
@@ -198,7 +198,7 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
           {/* Summary */}
           {nights > 0 && (
             <div className="border border-parchment-300 p-6 bg-parchment-50">
-              <p className="mb-4 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Booking Summary</p>
+              <p className="mb-4 text-[9px] uppercase tracking-[0.25em] text-obsidian-400">Ringkasan Pesanan</p>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-obsidian-500">Unit</span>

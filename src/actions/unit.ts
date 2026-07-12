@@ -2,6 +2,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function createUnit(data: {
   name: string;
@@ -13,6 +15,9 @@ export async function createUnit(data: {
   promotionalCopy?: string;
 }) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as any).role !== "OWNER") throw new Error("Unauthorized");
+
     const unit = await prisma.unit.create({ data });
     revalidatePath("/admin/units");
     revalidatePath("/"); // Revalidate landing page ISR
@@ -36,6 +41,9 @@ export async function updateUnit(
   }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as any).role !== "OWNER") throw new Error("Unauthorized");
+
     const unit = await prisma.unit.update({ where: { id }, data });
     revalidatePath("/admin/units");
     revalidatePath("/");
@@ -49,6 +57,9 @@ export async function updateUnit(
 
 export async function deleteUnit(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as any).role !== "OWNER") throw new Error("Unauthorized");
+
     await prisma.unit.delete({ where: { id } });
     revalidatePath("/admin/units");
     revalidatePath("/");

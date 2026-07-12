@@ -2,6 +2,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 // -----------------------------------------------------------------------------
 // Menu Management
@@ -9,6 +11,10 @@ import { revalidatePath } from "next/cache";
 
 export async function createCafeItem(data: { name: string; category: string; price: number; imageUrl?: string }) {
   try {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role;
+    if (!session || (role !== "OWNER" && role !== "CAFE_CASHIER")) throw new Error("Unauthorized");
+
     const item = await prisma.cafeItem.create({ data });
     revalidatePath("/admin/cafe/menu");
     return { success: true, item };
@@ -20,6 +26,10 @@ export async function createCafeItem(data: { name: string; category: string; pri
 
 export async function toggleCafeItemAvailability(id: string, isAvailable: boolean) {
   try {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role;
+    if (!session || (role !== "OWNER" && role !== "CAFE_CASHIER")) throw new Error("Unauthorized");
+
     await prisma.cafeItem.update({
       where: { id },
       data: { isAvailable }
@@ -35,6 +45,10 @@ export async function toggleCafeItemAvailability(id: string, isAvailable: boolea
 
 export async function deleteCafeItem(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role;
+    if (!session || (role !== "OWNER" && role !== "CAFE_CASHIER")) throw new Error("Unauthorized");
+
     await prisma.cafeItem.delete({ where: { id } });
     revalidatePath("/admin/cafe/menu");
     revalidatePath("/admin/cafe/pos");
@@ -66,6 +80,10 @@ interface ProcessOrderParams {
 
 export async function processCafeOrder(params: ProcessOrderParams) {
   try {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role;
+    if (!session || (role !== "OWNER" && role !== "CAFE_CASHIER")) throw new Error("Unauthorized");
+
     if (params.items.length === 0) {
       return { success: false, error: "Pesanan kosong." };
     }

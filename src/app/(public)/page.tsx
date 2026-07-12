@@ -119,7 +119,7 @@ export default async function PublicLandingPage() {
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative h-screen w-full overflow-hidden">
         <Image
-          src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/798760522.jpg?k=e6b10381b25574e277b2204741b734f853eb40b9f13345586482665778a90630&o=&hp=1"
+          src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80"
           alt="Rosa Glamping and Pool Ciparay — kolam renang dan penginapan"
           fill
           className="object-cover"
@@ -144,12 +144,12 @@ export default async function PublicLandingPage() {
             href="/#accommodations"
             className="animate-fade-up animation-delay-600 mt-10 border border-parchment-200 px-10 py-4 text-[10px] uppercase tracking-[0.3em] text-parchment-100 hover:bg-parchment-50 hover:text-obsidian-900 transition-colors duration-500"
           >
-            Lihat Kamar
+            Lihat Pilihan Kamar
           </Link>
         </div>
 
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-up animation-delay-600">
-          <span className="text-[9px] uppercase tracking-[0.3em] text-parchment-300">Gulir</span>
+          <span className="text-[9px] uppercase tracking-[0.3em] text-parchment-300">Gulir ke bawah</span>
           <div className="h-12 w-[1px] bg-gradient-to-b from-parchment-300 to-transparent" />
         </div>
       </section>
@@ -157,25 +157,25 @@ export default async function PublicLandingPage() {
       {/* ── KEUNGGULAN ────────────────────────────────────────────── */}
       <section className="py-32 px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="mb-8 text-[10px] uppercase tracking-[0.3em] text-obsidian-500">Kenapa Rosa?</p>
+          <p className="mb-8 text-[10px] uppercase tracking-[0.3em] text-obsidian-500">Kenapa Memilih Rosa?</p>
           <blockquote className="font-serif text-3xl font-light leading-relaxed text-obsidian-900 md:text-5xl">
-            "Alam yang sejuk, kolam yang jernih, dan kamar yang bersih — semua ada di sini."
+            "Udara yang sejuk, kolam yang jernih, dan fasilitas lengkap — liburan tenang impian keluarga Anda."
           </blockquote>
           <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3 text-left">
             <div>
               <p className="text-[9px] uppercase tracking-[0.3em] text-obsidian-400 mb-3">01</p>
-              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Properti Syariah</h3>
-              <p className="text-sm leading-relaxed text-obsidian-500">Aman dan nyaman untuk keluarga dan pasangan halal. Tidak perlu khawatir soal keamanan dan kenyamanan selama menginap.</p>
+              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Lingkungan Syariah</h3>
+              <p className="text-sm leading-relaxed text-obsidian-500">Aman dan nyaman untuk keluarga dan pasangan yang sudah menikah. Kami menjaga privasi dan ketenangan Anda selama menginap.</p>
             </div>
             <div>
               <p className="text-[9px] uppercase tracking-[0.3em] text-obsidian-400 mb-3">02</p>
-              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Kolam Renang</h3>
-              <p className="text-sm leading-relaxed text-obsidian-500">Kolam renang outdoor yang bersih dan terawat. Cocok untuk anak-anak hingga orang dewasa, dengan latar alam yang menyegarkan.</p>
+              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Fasilitas Kolam Renang</h3>
+              <p className="text-sm leading-relaxed text-obsidian-500">Nikmati kolam renang *outdoor* yang bersih dan terawat, cocok untuk tempat bermain anak maupun bersantai di sore hari.</p>
             </div>
             <div>
               <p className="text-[9px] uppercase tracking-[0.3em] text-obsidian-400 mb-3">03</p>
-              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Suasana Asri</h3>
-              <p className="text-sm leading-relaxed text-obsidian-500">Terletak di kaki gunung Ciparay dengan udara yang sejuk dan pemandangan alam yang indah. Kabur sejenak dari hiruk-pikuk kota.</p>
+              <h3 className="font-serif text-xl font-light text-obsidian-900 mb-3">Suasana Alam Ciparay</h3>
+              <p className="text-sm leading-relaxed text-obsidian-500">Berada tepat di kaki gunung Ciparay dengan udara sejuk dan pemandangan hijau yang memanjakan mata. Jauh dari kemacetan kota.</p>
             </div>
           </div>
         </div>
