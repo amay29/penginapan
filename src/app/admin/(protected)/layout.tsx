@@ -2,14 +2,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, LogOut, Grid2X2, CalendarDays, ExternalLink, Ticket, ScanLine, Coffee, Utensils, ReceiptText } from "lucide-react";
+import { LayoutDashboard, LogOut, Grid2X2, CalendarDays, ExternalLink, Ticket, ScanLine, Coffee, Utensils, ReceiptText, Users, BarChart3 } from "lucide-react";
 
 const navItems = [
   { href: "/admin",          icon: LayoutDashboard, label: "Overview"  },
+  { href: "/admin/reports",  icon: BarChart3,       label: "Reports"   },
   { href: "/admin/bookings", icon: CalendarDays,    label: "Bookings"  },
   { href: "/admin/units",    icon: Grid2X2,         label: "Spaces"    },
   { href: "/admin/pool",     icon: Ticket,          label: "Pool Tickets"},
   { href: "/admin/validasi-tiket", icon: ScanLine,  label: "Scan Tiket"  },
+  { href: "/admin/users",    icon: Users,           label: "Staff / Users" },
 ];
 
 const cafeNavItems = [
