@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo, useTransition, useEffect } from "react";
 import { Unit } from "@prisma/client";
 import { Calendar } from "@/components/ui/calendar";
 import { DateRange, Matcher } from "react-day-picker";
@@ -23,6 +23,14 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
   const [guests, setGuests]     = useState(1);
   const [isPending, startTransition] = useTransition();
   const [error, setError]       = useState<string | null>(null);
+  const [monthsToShow, setMonthsToShow] = useState(2);
+
+  useEffect(() => {
+    const handleResize = () => setMonthsToShow(window.innerWidth < 768 ? 1 : 2);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const disabledDates = useMemo<Matcher[]>(() => {
     const disabled: Matcher[] = [{ before: startOfDay(new Date()) }];
@@ -97,7 +105,7 @@ export default function BookingClient({ unit, existingBookings }: BookingClientP
           mode="range"
           selected={date}
           onSelect={handleDateSelect}
-          numberOfMonths={2}
+          numberOfMonths={monthsToShow}
           disabled={disabledDates}
           className="w-full"
         />

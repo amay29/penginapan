@@ -202,15 +202,15 @@ export default function TiketKolamPage() {
             </div>
 
             {/* Total */}
-            <div className="bg-parchment-100 p-6 mt-8 flex items-center justify-between">
-              <div>
+            <div className="bg-parchment-100 p-6 mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="text-center sm:text-left">
                 <p className="text-[10px] uppercase tracking-widest text-obsidian-500 mb-1">Total Pembayaran</p>
                 <p className="font-serif text-3xl text-obsidian-900">Rp {totalPrice.toLocaleString("id-ID")}</p>
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-obsidian-900 text-parchment-50 px-8 py-4 text-[10px] uppercase tracking-[0.2em] hover:bg-obsidian-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="w-full sm:w-auto bg-obsidian-900 text-parchment-50 px-8 py-4 text-[10px] uppercase tracking-[0.2em] hover:bg-obsidian-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Bayar"}
                 {!loading && <ArrowRight className="h-4 w-4" />}
