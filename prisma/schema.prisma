@@ -45,6 +45,8 @@ model Booking {
   //   daterange("checkIn", "checkOut") WITH &&
   // ) WHERE (status != 'CANCELLED')
 
+  @@index([status, createdAt])
+
   cafeOrders   CafeOrder[]
 }
 
@@ -122,6 +124,8 @@ model PoolTicket {
   qrCode      String   @unique // Unique token for the QR code
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([status, createdAt])
 }
 
 // -----------------------------------------------------------------------------
@@ -157,6 +161,8 @@ model CafeOrder {
   updatedAt     DateTime @updatedAt
 
   items         CafeOrderItem[]
+
+  @@index([status, createdAt])
 }
 
 model CafeOrderItem {
